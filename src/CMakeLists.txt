@@ -2,7 +2,7 @@ cmake_policy(SET CMP0026 OLD)
 set(TARGET i686-elf)
 set(CMAKE_AR ${TARGET}-ar)
 set(CMAKE_C_COMPILER ${TARGET}-gcc)
-set(CMAKE_RANLIB  ${TARGET}-ranlib)
+set(CMAKE_RANLIB ${TARGET}-ranlib)
 set(CMAKE_C_FLAGS "--std=gnu99 -ffreestanding -O2 -Wall -Wextra")
 message(STATUS ${CMAKE_C_COMPILER})
 
