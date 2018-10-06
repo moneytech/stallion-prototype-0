@@ -45,13 +45,36 @@ _start:
 	; runtime support to work as well.
 	extern disable_nmi
 	extern enable_a20
-	extern create_gdt
+	extern gdt
 
 	call disable_nmi
 	call enable_a20
-	call create_gdt
 
     ; Enter protected mode.
+	cli
+	lgdt [gdt]
+	mov eax, cr0
+    or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
+    mov cr0, eax
+
+    ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
+    ; to load CS with proper PM32 descriptor)
+    jmp 0x08:pmode_main
+.end:
+
+pmode_main:
+    ; Now, we want to load the data segment (0x10)
+    mov ax, 0x10
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    ; Stack
+    mov ebp, 0x90000
+    mov esp, ebp
+
 
 	; Enter the high-level kernel. The ABI requires the stack is 16-byte
 	; aligned at the time of the call instruction (which afterwards pushes
@@ -76,4 +99,3 @@ _start:
 	cli
 .hang:	hlt
 	jmp .hang
-.end:
