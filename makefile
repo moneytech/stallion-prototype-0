@@ -21,5 +21,5 @@ clean:
 src:
 	$(MAKE) -C src
 
-run: src/stallion.iso
+run: src src/stallion.iso
 	$(QEMU) -cdrom src/stallion.iso
