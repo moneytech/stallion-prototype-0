@@ -1,5 +1,5 @@
-libkernel.a: kernel.o
-	$(AR) rvs libkernel.a kernel.o
+libkernel.a: kernel_main.o
+	$(AR) rvs libkernel.a kernel_main.o
 
-kernel.o: kernel.c
-	$(CC) $(CFLAGS) -c -o kernel.o kernel.c
+kernel_main.o: kernel_main.c
+	$(CC) $(CFLAGS) -c -o kernel_main.o kernel_main.c

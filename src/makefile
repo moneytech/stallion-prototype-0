@@ -1,5 +1,3 @@
-.PHONY: all verify
-
 all: stallion.iso
 
 stallion.bin:
