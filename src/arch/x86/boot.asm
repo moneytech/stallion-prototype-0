@@ -60,7 +60,10 @@ _start:
     ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
     ; to load CS with proper PM32 descriptor)
     jmp 0x08:pmode_main
+	;call kernel_main
 .end:
+.hlt:
+	jmp .hlt
 
 pmode_main:
     ; Now, we want to load the data segment (0x10)
@@ -72,8 +75,8 @@ pmode_main:
     mov gs, ax
 
     ; Stack
-    mov ebp, 0x90000
-    mov esp, ebp
+    ;mov ebp, 0x90000
+    ;mov esp, ebp
 
 
 	; Enter the high-level kernel. The ABI requires the stack is 16-byte
