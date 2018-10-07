@@ -1,3 +1,0 @@
-cmake_minimum_required(VERSION 3.0)
-project(stallion)
-add_subdirectory(src)
