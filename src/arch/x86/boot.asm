@@ -74,10 +74,9 @@ pmode_main:
     mov fs, ax
     mov gs, ax
 
-    ; Stack
-    ;mov ebp, 0x90000
-    ;mov esp, ebp
-
+    ; Next, let's create and load the page directory.
+	extern create_page_directory
+	call create_page_directory
 
 	; Enter the high-level kernel. The ABI requires the stack is 16-byte
 	; aligned at the time of the call instruction (which afterwards pushes

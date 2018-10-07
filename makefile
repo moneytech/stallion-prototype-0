@@ -9,7 +9,7 @@ export QEMU := qemu-system-i386
 
 .PHONY: all clean src
 
-all: src run
+all: src
 
 clean:
 	find . -type f -name '*.o' -delete
