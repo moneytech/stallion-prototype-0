@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 message("Loaded CMake Toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 project(stallion)
