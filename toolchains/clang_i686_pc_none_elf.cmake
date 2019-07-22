@@ -1,0 +1,7 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR i686)
+set(clang_target i686-pc-none-elf)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_C_COMPILER_TARGET ${clang_target)
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_COMPILER_TARGET ${clang_target)
