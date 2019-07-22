@@ -10,6 +10,7 @@ typedef struct {
   int errno;
   void* data;
   size_t size;
+  void* context;
 } stallion_syscall_result_t;
 
 /*
@@ -32,6 +33,7 @@ typedef struct {
   void* arguments;
   size_t arguments_size;
   stallion_syscall_callback callback;
+  void* context;
 } stallion_syscall_t;
 
 /*
