@@ -1,5 +1,6 @@
 #ifndef STALLION_SYSCALL_H
 #define STALLION_SYSCALL_H
+#include <stdbool.h>
 #include <stddef.h>
 
 /**
@@ -27,6 +28,7 @@ typedef enum {
 
 typedef struct {
   stallion_syscall_number_t number;
+  bool blocking;
   void* arguments;
   size_t arguments_size;
   stallion_syscall_callback callback;
