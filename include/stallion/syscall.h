@@ -24,7 +24,8 @@ typedef enum {
   write = 2,
   close = 3,
   create_channel = 4,
-  get_pid = 5
+  get_pid = 5,
+  yield_execution = 6
 } stallion_syscall_number_t;
 
 typedef struct {
