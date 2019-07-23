@@ -1,30 +1,33 @@
 #define ASM_FILE 1
 #include <multiboot2.h>
+
+.set HDRLEN, (multiboot_end - multiboot_start)
  
 # Multiboot2
 .section .multiboot2
+.align 8
 multiboot_start:
-.align 4
 .long MULTIBOOT2_HEADER_MAGIC
 .long GRUB_MULTIBOOT_ARCHITECTURE_I386
-.long multiboot_end - multiboot_start # Header length
+.long HDRLEN  # Header length
 # Checksum
-.long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
+.long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + HDRLEN)
+# .long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + HDRLEN)
 
 # Get the address of the multiboot2 header.
-addr_tag_start:      
-	.short MULTIBOOT_HEADER_TAG_ADDRESS
-	.short MULTIBOOT_HEADER_TAG_OPTIONAL
-	.long addr_tag_end - addr_tag_start
-	/*  header_addr */
-	.long   multiboot_start
-	/*  load_addr */
-	.long   _start
-	/*  load_end_addr */
-	.long   _edata
-	/*  bss_end_addr */
-	.long   _ebss
-addr_tag_end:
+# addr_tag_start:      
+# 	.short MULTIBOOT_HEADER_TAG_ADDRESS
+# 	.short MULTIBOOT_HEADER_TAG_OPTIONAL
+# 	.long addr_tag_end - addr_tag_start
+# 	/*  header_addr */
+# 	.long   multiboot_start
+# 	/*  load_addr */
+# 	.long   _start
+# 	/*  load_end_addr */
+# 	.long   _edata
+# 	/*  bss_end_addr */
+# 	.long   _ebss
+# addr_tag_end:
 
 # Request the memory map.
 

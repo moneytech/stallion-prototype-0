@@ -4,16 +4,17 @@ add_executable(stallion_bin
 )
 
 # Compile/linking options... Compiler specific, to some degree.
-set(CMAKE_LINKER_FLAGS "-nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld")
+# set(CMAKE_LINKER_FLAGS "-nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld")
 
 # gcc opts
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -nostdlib")
+list(APPEND CMAKE_ASM_FLAGS ${CMAKE_C_FLAGS})
 
 # Use gcc to compile assembly
-set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_C_COMPILER> <INCLUDES> \
-    <CMAKE_C_FLAGS> <FLAGS> -o <OBJECT> <SOURCE>")
+# set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> <INCLUDES> \
+# <FLAGS> <CMAKE_C_FLAGS> -o <OBJECT> <SOURCE>")
 
-target_link_libraries(stallion_bin gcc)
+target_link_libraries(stallion_bin gcc -nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld)
 
 # Set output to stallion.bin instead of just "stallion" or "stallion.exe"
 set_target_properties(stallion_bin PROPERTIES PREFIX "")
