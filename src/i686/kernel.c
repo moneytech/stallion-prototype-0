@@ -102,7 +102,6 @@ void kernel_main(unsigned long magic, void *addr) {
   init_idt();
   kputs("IDT initialized.");
 
-  //
   // After our interrupts are in place, and our kernel is ID-mapped,
   // We can start our scheduler, so we can begin running processes.
   init_paging(&boot_info);

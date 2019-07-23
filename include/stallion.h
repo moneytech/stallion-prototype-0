@@ -53,4 +53,6 @@ static inline uint8_t inb(uint16_t port) {
   return ret;
 }
 
+static inline void interrupt(uint8_t no) { asm volatile("int %0" ::"Nd"(no)); }
+
 #endif
