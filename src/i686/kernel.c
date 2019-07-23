@@ -2,6 +2,7 @@
 #include <stallion.h>
 
 void kernel_main(unsigned long magic, void *addr) {
+  multiboot_uint64_t ram_start = 0x0;
   kputs("Entered Stallion kernel.");
   kwrites("magic=0x");
   kputi_r(magic, 16);
@@ -33,6 +34,8 @@ void kernel_main(unsigned long magic, void *addr) {
       multiboot_memory_map_t *mmap = mmap_tag->entries;
       while (mmap < (multiboot_memory_map_t *)(tag + tag->size)) {
         if (mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
+          // TODO: Handle multiple available RAM.
+          ram_start = mmap->addr;
           // Print info.
           kwrites("Found available RAM at 0x");
           kputi_r(mmap->addr, 16);
@@ -49,6 +52,40 @@ void kernel_main(unsigned long magic, void *addr) {
         mmap += mmap_tag->entry_size;
       }
     } break;
+    case MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME: {
+      kwrites("Booted by: ");
+      kputs(((struct multiboot_tag_string *)tag)->string);
+    } break;
+
+    case MULTIBOOT_TAG_TYPE_MODULE: {
+      struct multiboot_tag_module *module = (struct multiboot_tag_module *)tag;
+      kwrites("Found module (0x");
+      kputi_r(module->mod_start, 16);
+      kwrites("-0x");
+      kputi_r(module->mod_end, 16);
+      kwrites("); cmdline=");
+      kputs(module->cmdline);
+    } break;
+    case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO: {
+      struct multiboot_tag_basic_meminfo *info =
+          (struct multiboot_tag_basic_meminfo *)tag;
+      kwrites("Lower memory: 0x");
+      kputi_r(info->mem_lower, 16);
+      kwrites("\nUpper memory: 0x");
+      kputi_r(info->mem_upper, 16);
+      kputc('\n');
+    } break;
+    case MULTIBOOT_TAG_TYPE_BOOTDEV: {
+      struct multiboot_tag_bootdev *bootdev =
+          (struct multiboot_tag_bootdev *)tag;
+      kwrites("Root device drive number=0x");
+      kputi_r(bootdev->biosdev, 16);
+      kwrites("\nPartition number=0x");
+      kputi_r(bootdev->slice, 16);
+      kwrites("\nSub-partition number=0x");
+      kputi_r(bootdev->part, 16);
+      kputc('\n');
+    } break;
     }
     // Jump to the next one.
     tag = (struct multiboot_tag *)((multiboot_uint8_t *)tag +
@@ -56,5 +93,17 @@ void kernel_main(unsigned long magic, void *addr) {
   }
 
   kputs("Done reading tags.");
+
+  // We are done reading tags.
+  // Next, we set up our GDT, and then IDT.
+  // After our interrupts are in place, and our kernel is ID-mapped,
+  // We can start our scheduler, so we can begin running processes.
+  // Once our scheduler is up, our system is (theoretically) ready to
+  // start running userspace programs!
+  //
+  // Before we can run programs, we need to find them, and load the
+  // physical system. Search for available disks, and mount...
+  //
+  // Now that we have mounted disks
 }
 
