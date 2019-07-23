@@ -2,7 +2,8 @@
 #include <stallion.h>
 
 void kernel_main(unsigned long magic, void *addr) {
-  multiboot_uint64_t ram_start = 0x0;
+  stallion_boot_info_t boot_info;
+  boot_info.ram_start = 0x0;
   kputs("Entered Stallion kernel.");
   kwrites("magic=0x");
   kputi_r(magic, 16);
@@ -35,7 +36,7 @@ void kernel_main(unsigned long magic, void *addr) {
       while (mmap < (multiboot_memory_map_t *)(tag + tag->size)) {
         if (mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
           // TODO: Handle multiple available RAM.
-          ram_start = mmap->addr;
+          boot_info.ram_start = mmap->addr;
           // Print info.
           kwrites("Found available RAM at 0x");
           kputi_r(mmap->addr, 16);
@@ -96,8 +97,15 @@ void kernel_main(unsigned long magic, void *addr) {
 
   // We are done reading tags.
   // Next, we set up our GDT, and then IDT.
+  init_gdt();
+  kputs("GDT initialized.");
+
+  //
   // After our interrupts are in place, and our kernel is ID-mapped,
   // We can start our scheduler, so we can begin running processes.
+  init_paging(&boot_info);
+  kputs("Paging set up.");
+
   // Once our scheduler is up, our system is (theoretically) ready to
   // start running userspace programs!
   //
