@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
-project(stallion C CXX ASM)
+project(stallion)
 include(Platform/${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}.cmake)
 include_directories(include)
 add_subdirectory(src)
@@ -16,7 +16,7 @@ add_custom_command(OUTPUT ${STALLION_ISO}
   MAIN_DEPENDENCY stallion_bin
   SOURCES ${iso_contents}
   BYPRODUCTS ${STALLION_ISO}
-  COMMAND grub-file --is-x86-multiboot $<TARGET_FILE:stallion_bin>
+  COMMAND grub-file --is-x86-multiboot2 $<TARGET_FILE:stallion_bin>
   COMMAND rm -rf "${CMAKE_CURRENT_BINARY_DIR}/isodir"
   COMMAND cp -rp "${CMAKE_CURRENT_LIST_DIR}/iso_contents" "${CMAKE_CURRENT_BINARY_DIR}/isodir"
   COMMAND cp $<TARGET_FILE:stallion_bin> "${CMAKE_CURRENT_BINARY_DIR}/isodir/boot"

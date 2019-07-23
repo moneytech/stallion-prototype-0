@@ -1,6 +1,6 @@
 message(STATUS "Building for `Generic`....")
-enable_language(ASM)
-set(CMAKE_ASM_COMPILER i686-elf-as)
+# enable_language(ASM)
+# set(CMAKE_ASM_COMPILER i686-elf-as)
 set(QEMU qemu-system-i386)
 # if(("${CMAKE_LINKER}" EQUAL "") OR ("${CMAKE_LINKER}" MATCHES "NOTFOUND"))
 #   set(CMAKE_LINKER i686-elf-ld)

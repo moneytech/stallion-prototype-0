@@ -8,6 +8,11 @@ set(CMAKE_LINKER_FLAGS "-nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld")
 
 # gcc opts
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -nostdlib")
+
+# Use gcc to compile assembly
+set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_C_COMPILER> <INCLUDES> \
+    <CMAKE_C_FLAGS> <FLAGS> -o <OBJECT> <SOURCE>")
+
 target_link_libraries(stallion_bin gcc)
 
 # Set output to stallion.bin instead of just "stallion" or "stallion.exe"
