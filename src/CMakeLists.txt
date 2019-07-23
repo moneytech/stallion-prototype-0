@@ -10,6 +10,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -O2 -Wall -Wextra -fno-except
 add_subdirectory(${CMAKE_SYSTEM_PROCESSOR})
 add_executable(stallion_bin
   $<TARGET_OBJECTS:stallion_arch>
+  liballoc.c
 )
 
 

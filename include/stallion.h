@@ -1,8 +1,12 @@
 #ifndef STALLION_STALLION_H
 #define STALLION_STALLION_H
+#define _HAVE_SIZE_T
 #include "process.h"
 #include <multiboot2.h>
+#include <stddef.h>
 #include <stdint.h>
+
+#include <liballoc.h>
 
 #define COM1 0x3F8
 
@@ -40,6 +44,9 @@ void kputi_r(int val, int base);
  *  Should work in almost every case, honestly.
  */
 uint16_t kshortstrlen(const char *text);
+
+void *kmalloc(size_t size);
+void kfree(void *ptr);
 
 /** Sends a value through a serial port. */
 static inline void outb(uint16_t port, uint8_t val) {

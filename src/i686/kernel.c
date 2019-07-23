@@ -107,6 +107,28 @@ void kernel_main(unsigned long magic, void *addr) {
   init_paging(&boot_info);
   kputs("Paging set up.");
 
+  // Test our malloc...
+  uint16_t* a = malloc(sizeof(uint16_t));
+  uint16_t* b = malloc(sizeof(uint16_t));
+  uint16_t* c = malloc(5000);
+  uint16_t* d = malloc(5000);
+  uint16_t* e = malloc(sizeof(uint16_t));
+  *a = 0;
+  *b = 1;
+  *c = 2;
+  *d = 3;
+  *e = 4;
+  kputi(*a);
+  kputc('\n');
+  kputi(*b);
+  kputc('\n');
+  kputi(*c);
+  kputc('\n');
+  kputi(*d);
+  kputc('\n');
+  kputi(*e);
+  kputc('\n');
+
   // Once our scheduler is up, our system is (theoretically) ready to
   // start running userspace programs!
   //
