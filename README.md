@@ -6,7 +6,7 @@ Microkernel. Experimental/educational.
 ```bash
 mkdir -p build
 cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../toolchains/i686_elf_gcc.cmake ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/i686_elf_gcc.cmake ..
 cmake --build . -- -j4
 ```
 
