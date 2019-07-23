@@ -1,36 +1,15 @@
-.set MAGIC, 0xe85250d6
-.set ARCH, 0
-.set HDRLEN, (multiboot_end - multiboot_start)
- 
+.set MULTIBOOT2_HEADER_MAGIC, 0xe85250d6
+.set GRUB_MULTIBOOT_ARCHITECTURE_I386, 0
+
 # Multiboot2
 .section .multiboot2
 .align 8
 multiboot_start:
-.long MAGIC
-.long ARCH
-.long HDRLEN  # Header length
+.long MULTIBOOT2_HEADER_MAGIC
+.long GRUB_MULTIBOOT_ARCHITECTURE_I386
+.long multiboot_end - multiboot_start  # Header length
 # Checksum
-.long -(MAGIC + ARCH + HDRLEN)
-# .long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + HDRLEN)
-
-# Get the address of the multiboot2 header.
-# addr_tag_start:      
-# 	.short MULTIBOOT_HEADER_TAG_ADDRESS
-# 	.short MULTIBOOT_HEADER_TAG_OPTIONAL
-# 	.long addr_tag_end - addr_tag_start
-# 	/*  header_addr */
-# 	.long   multiboot_start
-# 	/*  load_addr */
-# 	.long   _start
-# 	/*  load_end_addr */
-# 	.long   _edata
-# 	/*  bss_end_addr */
-# 	.long   _ebss
-# addr_tag_end:
-
-# Request the memory map.
-
-# TODO: Request the boot command line.
+.long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + (multiboot_end - multiboot_start))
 
 # Close off the tag list.
 .short 0
