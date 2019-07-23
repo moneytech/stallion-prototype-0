@@ -1,17 +1,16 @@
-#define ASM_FILE 1
-#include <multiboot2.h>
-
+.set MAGIC, 0xe85250d6
+.set ARCH, 0
 .set HDRLEN, (multiboot_end - multiboot_start)
  
 # Multiboot2
 .section .multiboot2
 .align 8
 multiboot_start:
-.long MULTIBOOT2_HEADER_MAGIC
-.long GRUB_MULTIBOOT_ARCHITECTURE_I386
+.long MAGIC
+.long ARCH
 .long HDRLEN  # Header length
 # Checksum
-.long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + HDRLEN)
+.long -(MAGIC + ARCH + HDRLEN)
 # .long -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + HDRLEN)
 
 # Get the address of the multiboot2 header.
@@ -34,7 +33,7 @@ multiboot_start:
 # TODO: Request the boot command line.
 
 # Close off the tag list.
-.short MULTIBOOT_HEADER_TAG_END
+.short 0
 .short 0
 .long 8
 multiboot_end:

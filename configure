@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+ASM_SRC=$(find src -type f -name '*.s' | tr '\n' ' ')
+SRC=$(find src -type f -name '*.c' | tr '\n' ' ')
+ISO_CONTENTS=$(find iso_contents -type f)
+
+rm -f makefile
+echo "ARCH ?= i686-elf" >> makefile
+echo "CC := \$(ARCH)-gcc" >> makefile
+echo "AS := \$(ARCH)-as" >> makefile
+echo "CFLAGS := \$(CFLAGS) -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -nostdlib \\" >> makefile
+echo "-Iinclude -T src/linker.ld -lgcc" >> makefile
+echo "QEMU = qemu-system-i386" >> makefile
+echo ".PHONY: clean qemu" >> makefile
+echo "build/asm_built.o: ${ASM_SRC}" >> makefile
+printf "\tmkdir -p build\n" >> makefile
+printf "\t\$(AS) \$(ASFLAGS) -o \$@ \$ \$^\n" >> makefile
+echo "build/c_built.o: ${SRC}" >> makefile
+printf "\tmkdir -p build\n" >> makefile
+printf "\t\$(CC) \$(CFLAGS) \$(LDFLAGS) -o \$@ \$ \$^\n" >> makefile
+echo "build/stallion.iso: build/stallion.bin ${ISO_CONTENTS}" >> makefile
+printf "\tgrub-file --is-x86-multiboot2 \$<\n" >> makefile
+printf "\tcp -rp iso_contents build/isodir\n" >> makefile
+printf "\tcp \$< build/isodir/boot\n" >> makefile
+printf "\tgrub-mkrescue -o \$@ build/isodir\n" >> makefile
+echo "qemu: build/stallion.iso" >> makefile
+printf "\t\$(QEMU) -cdrom \$<\n" >> makefile
