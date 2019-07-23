@@ -1,8 +1,13 @@
 #ifndef STALLION_STALLION_H
 #define STALLION_STALLION_H
+#include "process.h"
 #include <stdint.h>
 
 #define COM1 0x3F8
+
+typedef struct {
+  uint64_t ram_start;
+} stallion_boot_info_t;
 
 /** Convert an integer to a string. */
 char *kitoa(int value, char *str, int base);
