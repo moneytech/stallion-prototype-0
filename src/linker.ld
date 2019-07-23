@@ -29,6 +29,7 @@ SECTIONS
 	.data BLOCK(4K) : ALIGN(4K)
 	{
 		*(.data)
+		_edata = .
 	}
  
 	/* Read-write data (uninitialized) and stack */
@@ -36,6 +37,7 @@ SECTIONS
 	{
 		*(COMMON)
 		*(.bss)
+		_ebss = .
 	}
  
 	/* The compiler may produce other sections, by default it will put them in
