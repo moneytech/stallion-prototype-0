@@ -40,6 +40,7 @@ _start:
 	push %eax
 
 	# Kernel!
+	cli # Disable interrupts, so we can enter protected mode.
 	call kernel_main
 	# Forever loop.
 	cli

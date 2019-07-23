@@ -1,6 +1,6 @@
 #include <stallion.h>
 
-void kput_at(char ch, int y, int x) {}
+/* void kput_at(char ch, int y, int x) {} */
 
 void kcls() {}
 
