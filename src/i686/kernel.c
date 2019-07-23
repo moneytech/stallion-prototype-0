@@ -99,6 +99,8 @@ void kernel_main(unsigned long magic, void *addr) {
   // Next, we set up our GDT, and then IDT.
   init_gdt();
   kputs("GDT initialized.");
+  init_idt();
+  kputs("IDT initialized.");
 
   //
   // After our interrupts are in place, and our kernel is ID-mapped,

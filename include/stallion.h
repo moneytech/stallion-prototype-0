@@ -11,6 +11,7 @@ typedef struct {
 } stallion_boot_info_t;
 
 void init_gdt();
+void init_idt();
 void init_paging(stallion_boot_info_t *boot_info);
 
 /** Convert an integer to a string. */
