@@ -1,3 +1,4 @@
+#include <multiboot2.h>
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
 .set MEMINFO,  1<<1             /* provide memory map */
@@ -12,7 +13,7 @@ search for this signature in the first 8 KiB of the kernel file, aligned at a
 32-bit boundary. The signature is in its own section so the header can be
 forced to be within the first 8 KiB of the kernel file.
 */
-.section .multiboot
+.section .multiboot2
 .align 4
 .long MAGIC
 .long FLAGS

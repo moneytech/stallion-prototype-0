@@ -7,12 +7,8 @@ add_executable(stallion_bin
 set(CMAKE_LINKER_FLAGS "-nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld")
 
 # gcc opts
-if(${CMAKE_C_COMPILER} MATCHES "gcc")
-  add_compile_options("-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -nostdlib")
-  set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -lgcc")
-elseif(${CMAKE_C_COMPILER} MATCHES "clang")
-  add_compile_options("-ffreestanding -fno-builtin -nostdlib -nostdinc -nostdinc++")
-endif()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -nostdlib")
+target_link_libraries(stallion_bin gcc)
 
 # Set output to stallion.bin instead of just "stallion" or "stallion.exe"
 set_target_properties(stallion_bin PROPERTIES PREFIX "")
