@@ -1,4 +1,5 @@
 include(ExternalProject)
+include_directories(include)
 # Compile/linking options... Compiler specific, to some degree.
 # set(CMAKE_LINKER_FLAGS "-nostdlib -T ${CMAKE_CURRENT_LIST_DIR}/linker.ld")
 
