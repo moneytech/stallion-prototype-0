@@ -25,6 +25,3 @@ add_custom_command(OUTPUT ${STALLION_ISO}
   COMMAND grub-mkrescue -o ${STALLION_ISO} "${CMAKE_CURRENT_BINARY_DIR}/isodir"
 )
 add_custom_target(stallion_iso ALL DEPENDS ${STALLION_ISO} stallion_bin)
-add_custom_target(run_qemu
-  COMMAND ${QEMU} -cdrom ${STALLION_ISO} -serial file:/dev/stdout
-  DEPENDS stallion_iso)
