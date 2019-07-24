@@ -1,4 +1,4 @@
-#include <stallion/stallion.h>
+#include "../../../../../../kernel/include/stallion/stallion.h"
 #include <stdio.h>
 #include <sys/errno.h>
 #include <sys/fcntl.h>
@@ -73,6 +73,6 @@ int write(int file, char *ptr, int len) {
   return stallion_syscall(STALLION_SYSCALL_WRITE, file, ptr, len);
 }
 
-int gettimeofday(struct timeval *p, struct timezone *z) {
+int gettimeofday(struct timeval *__restrict p, void *__restrict z) {
   return stallion_syscall(STALLION_SYSCALL_GETTIMEOFDAY, p, z);
 }

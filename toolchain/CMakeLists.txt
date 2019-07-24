@@ -13,5 +13,5 @@ ExternalProject_Add(newlib
   BUILD_COMMAND
     cd <BINARY_DIR> && make "-j${CORES}"
   INSTALL_COMMAND
-    cd <BINARY_DIR> && make install)
+  cd <BINARY_DIR> && make DESTDIR=<INSTALL_DIR> install)
 #add_library(stallion_userland OBJECT syscalls.c)
