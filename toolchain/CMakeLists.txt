@@ -24,8 +24,19 @@ ExternalProject_Add(automake
   BUILD_COMMAND
     cd <BINARY_DIR> && make "-j${CORES}" && make install)
 ExternalProject_Get_Property(automake install_dir)
+set(AUTOMAKE_INSTALL_DIR ${install_dir})
 set(AUTOMAKE "${install_dir}/bin/automake")
+set(ACLOCAL "${install_dir}/bin/aclocal-1.11")
+
+# Build binutils.
+ExternalProject_Add(binutils
+  SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/binutils-2.32"
+  CONFIGURE_COMMAND
+    cd <SOURCE_DIR>/ld && ${ACLOCAL} && ${AUTOMAKE}
+)
+add_dependencies(binutils automake)
 
 # Status messages...
 message(STATUS "Rolling autoconf 2.64: ${AUTOCONF}")
 message(STATUS "Rolling automake 1.11.6: ${AUTOMAKE}")
+message(STATUS "Rolling aclocal 1.11.6: ${ACLOCAL}")
