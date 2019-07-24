@@ -4,6 +4,7 @@ ProcessorCount(CORES)
 include_directories(include)
 add_subdirectory(druid)
 add_subdirectory(stld)
+set(ENV{PATH} "${CMAKE_CURRENT_LIST_DIR}/local/bin:$ENV{PATH}")
 ExternalProject_Add(newlib
   SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/newlib
   CONFIGURE_COMMAND

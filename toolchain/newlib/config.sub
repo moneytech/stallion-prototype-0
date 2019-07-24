@@ -1337,6 +1337,7 @@ case $os in
 	# Each alternative MUST end in a * to match a version number.
 	# sysv* is not here because it comes later, after sysvr4.
 	gnu* | bsd* | mach* | minix* | genix* | ultrix* | irix* \
+       | stallion* \
 	     | *vms* | esix* | aix* | cnk* | sunos | sunos[34]*\
 	     | hpux* | unos* | osf* | luna* | dgux* | auroraux* | solaris* \
 	     | sym* | kopensolaris* | plan9* \
