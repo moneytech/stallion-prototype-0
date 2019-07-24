@@ -1,0 +1,2 @@
+%clang
+%c -std=gnu11
