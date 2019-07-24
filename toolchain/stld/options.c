@@ -19,6 +19,7 @@ stld_result_t stld_infer_default_options(stld_options_t *options) {
 
   // Default to "a.out"
   options->output_name = "a.out";
+  options->last_error = "Unhandled error occurred.";
 
   // Next, search for library paths in the environment.
   options->input_files = NULL;
@@ -26,7 +27,7 @@ stld_result_t stld_infer_default_options(stld_options_t *options) {
   options->possible_library_files = NULL;
   options->show_help = false;
 
-  return STLD_RESULT_FAIL;
+  return STLD_RESULT_OK;
 }
 
 stld_result_t stld_parse_arguments(int argc, char **argv,
@@ -133,7 +134,11 @@ stld_result_t stld_string_list_append(stld_string_list_t **list, char *value) {
   if (*list == NULL) {
     *list = str;
   } else {
-    list[0]->next = str;
+    stld_string_list_t *ptr = list[0];
+    while (ptr->next != NULL) {
+      ptr = ptr->next;
+    }
+    ptr->next = str;
   }
   return STLD_RESULT_OK;
 }
