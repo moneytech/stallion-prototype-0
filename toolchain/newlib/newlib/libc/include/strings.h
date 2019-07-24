@@ -36,6 +36,10 @@
 #include <sys/_locale.h>
 #endif
 
+#ifndef size_t
+#define size_t unsigned int
+#endif
+
 #ifndef _SIZE_T_DECLARED
 typedef	__size_t	size_t;
 #define	_SIZE_T_DECLARED
