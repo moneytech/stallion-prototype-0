@@ -1,5 +1,5 @@
 add_library(stld
-  elf.h stld.h
+  stld.h
   options.c 
 )
 
