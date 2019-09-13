@@ -12,6 +12,7 @@ message(STATUS "Loaded CMake Toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "Assembler: ${CMAKE_ASM_COMPILER}")
 
+file(COPY bochsrc.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB_RECURSE iso_contents "iso_contents/**/*")
 set(STALLION_ISO "${CMAKE_CURRENT_BINARY_DIR}/stallion.iso")
 add_custom_command(OUTPUT ${STALLION_ISO} 
@@ -20,6 +21,7 @@ add_custom_command(OUTPUT ${STALLION_ISO}
   BYPRODUCTS ${STALLION_ISO}
   COMMAND grub-file --is-x86-multiboot2 $<TARGET_FILE:stallion_bin>
   COMMAND rm -rf "${CMAKE_CURRENT_BINARY_DIR}/isodir"
+  # COMMAND cp "${CMAKE_CURRENT_LIST_DIR}/bochsrc.txt" "${CMAKE_CURRENT_BINARY_DIR}"
   COMMAND cp -rp "${CMAKE_CURRENT_LIST_DIR}/iso_contents" "${CMAKE_CURRENT_BINARY_DIR}/isodir"
   COMMAND cp $<TARGET_FILE:stallion_bin> "${CMAKE_CURRENT_BINARY_DIR}/isodir/boot"
   COMMAND grub-mkrescue -o ${STALLION_ISO} "${CMAKE_CURRENT_BINARY_DIR}/isodir"

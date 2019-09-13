@@ -7,6 +7,7 @@ add_subdirectory(toolchain)
 
 ExternalProject_Add(kernel SOURCE_DIR 
   ${CMAKE_CURRENT_LIST_DIR}/kernel
+  BUILD_ALWAYS ON
   CONFIGURE_COMMAND 
     cd <BINARY_DIR> &&
     ${CMAKE_COMMAND} -DCMAKE_TOOLCHAIN_FILE=<SOURCE_DIR>/cmake/i686_elf_gcc.cmake <SOURCE_DIR>
@@ -18,4 +19,12 @@ set(STALLION_ISO ${binary_dir}/stallion.iso)
 set(QEMU qemu-system-i386)
 add_custom_target(run_qemu
   COMMAND ${QEMU} -cdrom ${STALLION_ISO} -serial file:/dev/stdout
+  DEPENDS kernel)
+
+# BOCHS
+set(BOCHS bochs)
+ExternalProject_Get_Property(kernel install_dir)
+add_custom_target(run_bochs
+  COMMAND bochs -q
+  WORKING_DIRECTORY ${install_dir}
   DEPENDS kernel)
