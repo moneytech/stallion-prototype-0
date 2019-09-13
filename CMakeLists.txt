@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 project(stallion)
 include(ExternalProject)
+
 add_subdirectory(toolchain)
+
 ExternalProject_Add(kernel SOURCE_DIR 
   ${CMAKE_CURRENT_LIST_DIR}/kernel
   CONFIGURE_COMMAND 
