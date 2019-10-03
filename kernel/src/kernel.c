@@ -16,4 +16,3 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
 
   kputptr("Kernel mounted at", &startkernel);
 }
-

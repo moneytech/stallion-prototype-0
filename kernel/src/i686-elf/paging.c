@@ -1,49 +1,76 @@
 #include <multiboot2.h>
 #include <stallion.h>
-#define PAGE_DIRECTORY_SIZE 1024
-#define PAGE_TABLE_SIZE PAGE_DIRECTORY_SIZE
-#define PAGE_SIZE 4096
-#define PAGE_MASK_EMPTY 0xfffff000
-#define PAGE_MASK_PRESENT 0x1
-#define PAGE_MASK_RING0 0x4
-
-extern uint32_t startkernel;
-extern uint32_t endkernel;
-
-struct _stallion_page_table {
-  uint32_t pages[PAGE_TABLE_SIZE] __attribute__((aligned(4096)));
-} __attribute__((packed));
+#include <stallion_i686_elf.h>
 
 uint32_t page_directory[PAGE_DIRECTORY_SIZE] __attribute__((aligned(4096)));
 stallion_page_table_t page_tables[PAGE_DIRECTORY_SIZE];
 
-void init_paging(stallion_boot_info_t *boot_info) {
-  // First, set up our page directory. Every entry should point to
-  // a page table.
-  for (uint16_t i = 0; i < PAGE_DIRECTORY_SIZE; i++) {
-    stallion_page_table_t *table = &page_tables[i];
-    page_directory[i] = (uint32_t)table & PAGE_MASK_EMPTY;
+void stallion_init_paging(stallion_t *os) {
+  // Initialize the page directory to zeroes.
+  kmemset(page_directory, 0, sizeof(page_directory));
+}
 
-    // While we loop, also initialize each page table.
-    for (uint16_t j = 0; j < PAGE_TABLE_SIZE; j++) {
-      // Each page points to a 4KB offset from ram_start.
-      multiboot_uint64_t addr = boot_info->ram_start + (PAGE_SIZE * j);
-      table->pages[0] = addr & PAGE_MASK_EMPTY;
+void stallion_page_get_indices(void *addr, uint32_t *pde_index,
+                               uint32_t *pte_index) {
+  if (pde_index != NULL)
+    *pde_index = (uint32_t)addr >> 22;
+  if (pte_index != NULL)
+    *pte_index = (uint32_t)addr >> 12 & 0x03FF;
+}
+
+uint32_t stallion_page_get_directory_size() { return PAGE_DIRECTORY_SIZE; }
+
+uint32_t stallion_page_get_table_size() { return PAGE_TABLE_SIZE; }
+
+uint32_t stallion_page_get_page_size() { return PAGE_SIZE; }
+
+uint32_t stallion_page_get_flag_kernel() { return 0x0; }
+
+uint32_t stallion_page_get_flag_user() {
+  return 0x4; // 0x100
+}
+
+uint32_t stallion_page_get_flag_readwrite() {
+  return 0x2; // 0x10
+}
+
+bool stallion_page_map(void *phys, void *virt, uint32_t flags) {
+  uint32_t pde_index, pte_index;
+  stallion_page_get_indices(virt, &pde_index, &pte_index);
+  if (pde_index >= PAGE_DIRECTORY_SIZE)
+    return false;
+  if (pte_index >= PAGE_TABLE_SIZE)
+    return false;
+
+  // Determine if the directory is already present, by OR-ing against 0x1.
+  if ((page_directory[pde_index] & 0x1) != 0x1) {
+    // Create a page directory, pointing to the page table.
+    page_directory[pde_index] =
+        ((uint32_t)&page_tables[pde_index]) | (flags & 0xFFF) | 0x01;
+  }
+
+  // Check if the page mapping is present. If so, return false.
+  uint32_t *pt = &page_tables[pde_index].pages[pte_index];
+  if ((*pt & 0x1) == 0x1)
+    return false;
+
+  // Otherwise, set the value, and return true.
+  *pt = ((uint32_t)phys) | (flags & 0xFFF) | 0x01;
+  return true;
+}
+
+size_t stallion_page_map_region(void *phys, void *virt, size_t size,
+                                uint32_t flags) {
+  size_t count = 0;
+  void *orig_virt = virt;
+  while (phys < orig_virt) {
+    if (stallion_page_map(phys, virt, flags)) {
+      phys += PAGE_SIZE;
+      virt += PAGE_SIZE;
+      count++;
+    } else {
+      break;
     }
   }
-
-  // Next, identity map the kernel.
-  // Simply put: We simply set (present) on pages in the first
-  // page table, until we have passed the end of the kernel.
-  uint32_t offset = 0;
-  uint16_t id_mapped_pages = 0;
-  page_directory[0] |= PAGE_MASK_PRESENT;
-  while (offset < endkernel) {
-    page_tables[0].pages[id_mapped_pages] =
-        (id_mapped_pages * PAGE_SIZE) | PAGE_MASK_PRESENT;
-    id_mapped_pages++;
-    offset += PAGE_SIZE;
-  }
-
-	// Next, load the page directory, and enable paging.
+  return count;
 }

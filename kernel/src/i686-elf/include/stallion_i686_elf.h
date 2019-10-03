@@ -5,10 +5,20 @@
 #include <stdint.h>
 
 #define COM1 0x3F8
+#define PAGE_DIRECTORY_SIZE 1024
+#define PAGE_TABLE_SIZE PAGE_DIRECTORY_SIZE
+#define PAGE_SIZE 4096
+#define PAGE_MASK_EMPTY 0xfffff000
+#define PAGE_MASK_PRESENT 0x1
+#define PAGE_MASK_RING0 0x4
 
-void stallion_init_gdt(stallion_t* os);
-void stallion_init_idt(stallion_t* os);
-void stallion_init_paging(stallion_t* os);
+typedef struct _stallion_page_table {
+  uint32_t pages[PAGE_TABLE_SIZE] __attribute__((aligned(4096)));
+} __attribute__((packed)) stallion_page_table_t;
+
+void stallion_init_gdt(stallion_t *os);
+void stallion_init_idt(stallion_t *os);
+void stallion_init_paging(stallion_t *os);
 extern void stallion_gdt_enable(uint32_t gdtr);
 
 /** Sends a value through a serial port. */
