@@ -15,6 +15,7 @@ clean:
 	find . \( -name '*.o' -o -name '*.a' \
 		-o -name '*.bin' -o -name '*.iso' \) \
 		-delete
+	$(MAKE) -C kernel clean
 
 $(KERNEL):
 	$(MAKE) -C kernel
