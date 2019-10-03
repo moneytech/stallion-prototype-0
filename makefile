@@ -3,7 +3,7 @@ export AR=$(ARCH)-ar
 export AS=$(ARCH)-as
 export CC=$(ARCH)-gcc
 export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib
-export DEBUGCFLAGS=-gdwarf-2 -g3 -DOS3_DEBUG=1
+export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
 export QEMU=qemu-system-i386
 KERNEL=kernel/stallion.iso
 
@@ -31,4 +31,4 @@ qemu: kernel-debug
 		-d int -no-shutdown -s -S
 
 qemu-no-gdb: $(KERNEL)
-	$(QEMU) -cdrom $< -no-reboot -no-shutdown -serial file:/dev/stdout
+	$(QEMU) -cdrom $< -no-reboot -no-shutdown # -serial file:/dev/stdout
