@@ -7,6 +7,9 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
     return;
   }
 
+  stallion_t os;
+
   kputs("Correct magic - Multiboot2 detected.");
+  stallion_early_init(&os, magic, addr);
 }
 

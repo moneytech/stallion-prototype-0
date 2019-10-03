@@ -2,11 +2,11 @@
 #define STALLION_STALLION_H
 #define _HAVE_SIZE_T
 #include "process.h"
-#include <multiboot2.h>
+#include "multiboot2.h"
 #include <stddef.h>
 #include <stdint.h>
 
-#include <liballoc.h>
+#include "liballoc.h"
 
 typedef struct {
   multiboot_uint64_t ram_start;

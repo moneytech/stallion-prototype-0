@@ -40,7 +40,7 @@ static inline void gdt_describe(gdt_entry_t *entry, uint32_t base,
 }
 
 // We don't use segmentation, so we provided a bare-minimum GDT.
-void init_gdt() {
+void stallion_init_gdt(stallion_t* os) {
   gdt_entry_t *null_descriptor = &gdt[0], *code_descriptor = &gdt[1],
               *data_descriptor = &gdt[2], *user_code_descriptor = &gdt[3],
               *user_data_descriptor = &gdt[4];
