@@ -8,6 +8,13 @@ stallion_page_table_t page_tables[PAGE_DIRECTORY_SIZE];
 void stallion_init_paging(stallion_t *os) {
   // Initialize the page directory to zeroes.
   kmemset(page_directory, 0, sizeof(page_directory));
+
+  // ID-map the kernel.
+  stallion_page_map_region(
+      // &startkernel, &startkernel, &endkernel - &startkernel,
+      (void *)0, (void *)0, (uint32_t)&endkernel,
+      stallion_page_get_flag_readwrite() || stallion_page_get_flag_kernel());
+  stallion_paging_enable((uint32_t)&page_directory);
 }
 
 void stallion_page_get_indices(void *addr, uint32_t *pde_index,
@@ -47,6 +54,9 @@ bool stallion_page_map(void *phys, void *virt, uint32_t flags) {
     // Create a page directory, pointing to the page table.
     page_directory[pde_index] =
         ((uint32_t)&page_tables[pde_index]) | (flags & 0xFFF) | 0x01;
+    for (int i = 0; i < stallion_page_get_table_size(); i++) {
+      page_tables[pde_index].pages[i] = 0x0;
+    }
   }
 
   // Check if the page mapping is present. If so, return false.
@@ -63,11 +73,11 @@ size_t stallion_page_map_region(void *phys, void *virt, size_t size,
                                 uint32_t flags) {
   size_t count = 0;
   void *orig_virt = virt;
-  while (phys < orig_virt) {
+  while (count < size) {
     if (stallion_page_map(phys, virt, flags)) {
       phys += PAGE_SIZE;
       virt += PAGE_SIZE;
-      count++;
+      count += PAGE_SIZE;
     } else {
       break;
     }

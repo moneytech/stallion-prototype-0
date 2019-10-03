@@ -20,6 +20,7 @@ void stallion_init_gdt(stallion_t *os);
 void stallion_init_idt(stallion_t *os);
 void stallion_init_paging(stallion_t *os);
 extern void stallion_gdt_enable(uint32_t gdtr);
+extern void stallion_paging_enable(uint32_t pde);
 
 /** Sends a value through a serial port. */
 static inline void outb(uint16_t port, uint8_t val) {

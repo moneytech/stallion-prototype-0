@@ -13,6 +13,4 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
 
   kputs("Correct magic - Multiboot2 detected.");
   stallion_early_init(&os, magic, addr);
-
-  kputptr("Kernel mounted at", &startkernel);
 }
