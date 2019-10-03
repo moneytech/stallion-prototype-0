@@ -84,3 +84,63 @@ size_t stallion_page_map_region(void *phys, void *virt, size_t size,
   }
   return count;
 }
+
+int liballoc_lock() { return 0; }
+
+int liballoc_unlock() { return 0; }
+
+void *liballoc_alloc(int page_count) {
+  // TODO: There's opportunity to optimize this, i.e. by using a stack.
+
+  // Skip the ID-mapped region.
+  void *base_ptr = &endkernel;
+
+  while (base_ptr < (void *)0xffffffff) {
+    int avail = 0;
+
+    for (int i = 0; i < page_count; i++) {
+      void *ptr = base_ptr + (i * PAGE_SIZE);
+      uint32_t pde_index, pte_index;
+      stallion_page_get_indices(ptr, &pde_index, &pte_index);
+      // If the PDE is not present, then the PTE is obviously unmapped.
+      if ((page_directory[pde_index] & 0x1) != 0x1) {
+        avail++;
+        continue;
+      }
+
+      // Otherwise, test the PTE.
+      if ((page_tables[pde_index].pages[pte_index] & 0x1) != 0x1) {
+        avail++;
+        continue;
+      }
+
+      break;
+    }
+
+    // Map all of the found pages.
+    if (avail == page_count) {
+      for (int i = 0; i < page_count; i++) {
+        void *ptr = base_ptr + (i * PAGE_SIZE);
+        stallion_page_map(ptr, ptr,
+                          stallion_page_get_flag_kernel() |
+                              stallion_page_get_flag_readwrite());
+      }
+      return base_ptr;
+    } else {
+      base_ptr += (avail + 1) * PAGE_SIZE;
+    }
+  }
+
+  return NULL;
+}
+
+int liballoc_free(void *base_ptr, int page_count) {
+  // Unmap all of the pages.
+  // TODO: Free page directory if it's unused.
+  for (int i = 0; i < page_count; i++) {
+    void *ptr = base_ptr + (i * PAGE_SIZE);
+    uint32_t pde_index, pte_index;
+    stallion_page_get_indices(ptr, &pde_index, &pte_index);
+    page_tables[pde_index].pages[pte_index] = 0x0;
+  }
+}

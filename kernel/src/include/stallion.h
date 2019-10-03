@@ -61,9 +61,6 @@ void kmemcpy(void *dst, void *src, unsigned long size);
  */
 uint16_t kshortstrlen(const char *text);
 
-void *kmalloc(size_t size);
-void kfree(void *ptr);
-
 void stallion_page_get_indices(void *addr, uint32_t *pde_index,
                                uint32_t *pte_index);
 
