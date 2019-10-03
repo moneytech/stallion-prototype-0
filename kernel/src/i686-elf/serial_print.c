@@ -20,13 +20,6 @@ term_line_t lines[ROWS];
 uint8_t term_init = 0;
 uint8_t line_no = 0;
 
-void kputptr(const char *label, void *ptr) {
-  kwrites(label);
-  kwrites(": 0x");
-  kputi_r((uint32_t)ptr, 16);
-  kputc('\n');
-}
-
 void kputs(const char *text) {
   kwrites(text);
   kputc('\n');
@@ -39,12 +32,25 @@ void kwrites(const char *text) {
   }
 }
 
-void kputi(int val) { kputi_r(val, 10); }
+void kwritei(int val) { kputi_r(val, 10); }
 
-void kputi_r(int val, int base) {
+void kwritei_r(int val, int base) {
   char buf[33]; // = {0};
   kitoa(val, buf, base);
   kwrites(buf);
+}
+
+void kputi_r(int val, int base) {
+  kwritei_r(val, base);
+  kputc('\n');
+}
+
+void kputi(int val) { kputi_r(val, 10); }
+
+void kputptr(const char *label, void *ptr) {
+  kwrites(label);
+  kwrites(": 0x");
+  kputi_r((uint32_t)ptr, 16);
 }
 
 uint16_t kshortstrlen(const char *text) {

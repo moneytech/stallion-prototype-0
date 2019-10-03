@@ -3,6 +3,7 @@
 #define _HAVE_SIZE_T
 #include "process.h"
 #include "multiboot2.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -34,10 +35,18 @@ void kwrites(const char *text);
 void kputs(const char *text);
 
 /** Writes an integer to the screen as base-10. */
+void kwritei(int val);
+
+/** Writes an integer to the screen. */
+void kwritei_r(int val, int base);
+
+/** Writes an integer to the screen as base-10. */
 void kputi(int val);
 
 /** Writes an integer to the screen. */
 void kputi_r(int val, int base);
+
+void kputptr(const char* label, void* ptr);
 
 void kmemset(void *ptr, uint8_t value, size_t size);
 
@@ -51,4 +60,23 @@ uint16_t kshortstrlen(const char *text);
 
 void *kmalloc(size_t size);
 void kfree(void *ptr);
+
+uint32_t stallion_page_get_indices(void* addr);
+
+uint32_t stallion_page_get_directory_size();
+
+uint32_t stallion_page_get_table_size();
+
+uint32_t stallion_page_get_page_size();
+
+uint32_t stallion_page_get_flag_kernel();
+
+uint32_t stallion_page_get_flag_user();
+
+uint32_t stallion_page_get_flag_readwrite();
+
+bool stallion_page_map(void* phys, void* virt, uint32_t flags);
+
+size_t stallion_page_map_region(void* phys, void* virt, size_t size, uint32_t flags);
+
 #endif
