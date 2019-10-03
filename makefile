@@ -1,7 +1,9 @@
-export ARCH=i686-elf
-export AR=$(ARCH)-ar
-export AS=$(ARCH)-as
-export CC=$(ARCH)-gcc
+export ARCH=i686
+export TARGET=$(ARCH)-elf
+export AR=$(TARGET)-ar
+export AS=$(TARGET)-as
+export CC=$(TARGET)-gcc
+export RANLIB=$(TARGET)-ranlib
 export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib
 export DEBUGASFLAGS=-g
 export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
