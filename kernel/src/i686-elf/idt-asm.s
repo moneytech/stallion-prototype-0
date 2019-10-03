@@ -132,7 +132,7 @@ interrupt_setup:
 	subl $4, %esp
 	andl $0xFFFFFFF0, %esp # Bitwise operation to align the stack!
 	movl %ebx, (%esp)
-	call interrupt_handler
+	call stallion_interrupt_handler
 	movl %ebx, %esp
 
 	popl %ebp
@@ -158,3 +158,10 @@ interrupt_setup:
 	addl $8, %esp
 	iret
 .size interrupt_setup, . - interrupt_setup
+
+.global stallion_get_page_fault_pointer
+.type stallion_get_page_fault_pointer, @function
+stallion_get_page_fault_pointer:
+	mov %cr2, %eax
+	ret
+.size stallion_get_page_fault_pointer, . - stallion_get_page_fault_pointer

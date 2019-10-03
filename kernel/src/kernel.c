@@ -14,8 +14,5 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   kputs("Correct magic - Multiboot2 detected.");
   stallion_early_init(&os, magic, addr);
 
-  char *big_str = (char *)kmalloc(32768);
-  kmemset(big_str, 0, 32768);
-  kmemset(big_str, 'A', 70);
-  kputs(big_str);
+  // asm("int $0x80");
 }

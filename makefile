@@ -3,6 +3,7 @@ export AR=$(ARCH)-ar
 export AS=$(ARCH)-as
 export CC=$(ARCH)-gcc
 export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib
+export DEBUGASFLAGS=-g
 export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
 export QEMU=qemu-system-i386
 KERNEL=kernel/stallion.iso
@@ -21,7 +22,7 @@ $(KERNEL):
 	$(MAKE) -C kernel
 
 kernel: $(KERNEL)
-kernel-debug: CFLAGS+=$(DEBUGCFLAGS)
+kernel-debug: ASFLAGS+=$(DEBUGASFLAGS) CFLAGS+=$(DEBUGCFLAGS)
 kernel-debug: kernel
 
 bochs: kernel-debug debug.rc

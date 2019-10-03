@@ -17,9 +17,34 @@ typedef struct {
   stallion_boot_info_t boot_info;
 } stallion_t;
 
+typedef struct {
+  uint32_t cr2;
+  uint32_t gs;
+  uint32_t fs;
+  uint32_t ds;
+  uint32_t es;
+  uint32_t edi;
+  uint32_t esi;
+  uint32_t ebp;
+  uint32_t ebx;
+  uint32_t edx;
+  uint32_t ecx;
+  uint32_t eax;
+  uint32_t number; // The interrupt number, i.e. 0x80
+  uint32_t error_code;
+  uint32_t cs;
+  uint32_t eflags;
+  uint32_t esp;
+  uint32_t ss;
+} __attribute__((packed)) stallion_interrupt_t;
+
 extern uint32_t startkernel;
 extern uint32_t endkernel;
 
+void stallion_interrupt_handler(stallion_interrupt_t *ctx);
+void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx);
+void stallion_handle_page_fault(stallion_interrupt_t *ctx);
+void *stallion_get_page_fault_pointer();
 void stallion_early_init(stallion_t *os, unsigned long magic, void *addr);
 
 /** Convert an integer to a string. */
@@ -80,5 +105,10 @@ bool stallion_page_map(void *phys, void *virt, uint32_t flags);
 
 size_t stallion_page_map_region(void *phys, void *virt, size_t size,
                                 uint32_t flags);
+
+static inline void hang() {
+  while (true)
+    continue;
+}
 
 #endif

@@ -120,7 +120,7 @@ void kterm_init() {
   }
 }
 
-#ifdef STALLION_DEBUG
+#ifdef STALLION_DEBUG_AAA
 void kputc(char ch) { outb(COM1, ch); }
 #else
 void kputc(char ch) {
