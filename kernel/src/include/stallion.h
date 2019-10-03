@@ -8,15 +8,15 @@
 
 #include <liballoc.h>
 
-#define COM1 0x3F8
-
 typedef struct {
   multiboot_uint64_t ram_start;
 } stallion_boot_info_t;
 
-void init_gdt();
-void init_idt();
-void init_paging(stallion_boot_info_t *boot_info);
+typedef struct {
+  stallion_boot_info_t boot_info;
+} stallion_t;
+
+void stallion_early_init(stallion_t *os, unsigned long magic, void *addr);
 
 /** Convert an integer to a string. */
 char *kitoa(int value, char *str, int base);
@@ -47,19 +47,4 @@ uint16_t kshortstrlen(const char *text);
 
 void *kmalloc(size_t size);
 void kfree(void *ptr);
-
-/** Sends a value through a serial port. */
-static inline void outb(uint16_t port, uint8_t val) {
-  asm volatile("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
-/** Receives a value from a serial port. */
-static inline uint8_t inb(uint16_t port) {
-  uint8_t ret;
-  asm volatile("inb %1, %0" : "=a"(ret) : "Nd"(port));
-  return ret;
-}
-
-static inline void interrupt(uint8_t no) { asm volatile("int %0" ::"Nd"(no)); }
-
 #endif
