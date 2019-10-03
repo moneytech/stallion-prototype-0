@@ -39,6 +39,10 @@ void kputi(int val);
 /** Writes an integer to the screen. */
 void kputi_r(int val, int base);
 
+void kmemset(void *ptr, uint8_t value, size_t size);
+
+void kmemcpy(void *dst, void *src, unsigned long size);
+
 /**
  * Finds the length of a string that is KNOWN to be <= 65535 characters long.
  *  Should work in almost every case, honestly.
