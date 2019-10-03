@@ -143,7 +143,6 @@ void stallion_init_idt(stallion_t* os) {
 
   // IDT time.
   kmemset(&idt_entries, 0, sizeof(idt_entries));
-  idt_descriptor.size = sizeof(idt_entries) - 1;
 
   DECLARE_ISR(0);
   DECLARE_ISR(1);
@@ -203,8 +202,10 @@ void stallion_init_idt(stallion_t* os) {
   DECLARE_ISR(128);
   irq_enable(128);
 
+  // IDT time.
   // This is CRITICAL: Align the pointer on 16 bits.
   // I spent several hours hunting this down.
+  idt_descriptor.size = sizeof(idt_entries) - 1;
   idt_descriptor.offset = (uint32_t)&idt_entries;
 
   // In hindsight, DO NOT "16-bit align" this.

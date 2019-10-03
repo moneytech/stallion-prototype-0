@@ -1,5 +1,6 @@
 #include <stallion.h>
 #include <stallion_i686_elf.h>
+#include <stallion/stallion_api.h>
 
 #define IRQ_INVALID_TSS 0xa
 #define ISR_GENERAL_PROTECTION_FAULT 0xd
