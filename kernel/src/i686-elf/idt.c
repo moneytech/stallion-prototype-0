@@ -229,7 +229,7 @@ void stallion_init_idt(stallion_t* os) {
 
   // TODO: Remove this
   // For now, only enable the keyboard.
-  outb(PIC1 + 1, 0xfd);
-  outb(PIC2 + 1, 0xff);
+  // outb(PIC1 + 1, 0xfd);
+  // outb(PIC2 + 1, 0xff);
   asm volatile("sti");
 }

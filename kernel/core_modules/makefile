@@ -3,8 +3,9 @@ export CFLAGS+=-I$(shell pwd)/../libc/include \
 
 all: sanity_check.mod
 
-# %.mod: %.o
-# 	$(CC) $(CFLAGS) -o $@ $< -lc
+%.mod: %.o
+	$(LD) -o $@ $<
+	# $(CC) $(CFLAGS) -o $@ $< -lc
 
-%.mod: %.s
-	$(AS) $(ASFLAGS) -o $@ $<
+# %.mod: %.s
+# 	$(AS) $(ASFLAGS) -o $@ $<

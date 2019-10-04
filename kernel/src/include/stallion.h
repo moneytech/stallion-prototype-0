@@ -112,6 +112,7 @@ size_t stallion_page_map_region(void *phys, void *virt, size_t size,
                                 uint32_t flags);
 
 static inline void hang() {
+  kputs("HANGING");
   while (true)
     continue;
 }

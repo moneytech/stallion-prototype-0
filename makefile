@@ -3,6 +3,7 @@ export TARGET=$(ARCH)-elf
 export AR=$(TARGET)-ar
 export AS=$(TARGET)-as
 export CC=$(TARGET)-gcc
+export LD=$(TARGET)-ld
 export RANLIB=$(TARGET)-ranlib
 export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib
 export DEBUGASFLAGS=-g
