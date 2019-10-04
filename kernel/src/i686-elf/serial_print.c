@@ -125,7 +125,7 @@ void kputc(char ch) { outb(COM1, ch); }
 #else
 void kputc(char ch) {
   // Also write to serial, because the screen is only so tall.
-  outb(COM1, ch);
+  // outb(COM1, ch);
   kterm_init();
   if (ch != '\n') {
     term_line_t *line = &lines[line_no];

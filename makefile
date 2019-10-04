@@ -14,6 +14,10 @@ KERNEL=kernel/stallion.iso
 
 all: $(KERNEL)
 
+debug: ASFLAGS+=$(DEBUGASFLAGS)
+debug: CFLAGS+=$(DEBUGCFLAGS)
+debug: all
+
 clean:
 	find . \( -name '*.o' -o -name '*.a' \
 		-o -name '*.bin' -o -name '*.iso' -o -name '*.mod' \) \
@@ -24,15 +28,13 @@ $(KERNEL):
 	$(MAKE) -C kernel
 
 kernel: $(KERNEL)
-kernel-debug: ASFLAGS+=$(DEBUGASFLAGS) CFLAGS+=$(DEBUGCFLAGS)
-kernel-debug: kernel
 
-bochs: kernel-debug debug.rc
+bochs: debug debug.rc
 	bochs -q -rc debug.rc
 
-qemu: kernel-debug
+qemu: debug
 	$(QEMU) -cdrom $(KERNEL) -serial file:/dev/stdout -no-reboot \
 		-d int -no-shutdown -s -S
 
-qemu-no-gdb: $(KERNEL)
-	$(QEMU) -cdrom $< -no-reboot -no-shutdown -serial file:/dev/stdout
+qemu-no-gdb: debug
+	$(QEMU) -cdrom $(KERNEL) -no-reboot -no-shutdown -serial file:/dev/stdout

@@ -20,8 +20,12 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     case ISR_PAGE_FAULT: {
       stallion_handle_page_fault(ctx);
     } break;
+    case 0x6: {
+      kputs("Invalid opcode.");
+      kputptr("Errant instruction pointer", (void *)ctx->esp);
+    } break;
     default: {
-      kwrites("Unhandled ISR interrupt: ");
+      kwrites("Unhandled exception: ");
       kwritei(ctx->number);
       kwrites("; error code=");
       kputi(ctx->error_code);
@@ -61,8 +65,11 @@ void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
   // specify the faulty address.
   void *ptr = stallion_get_page_fault_pointer();
   kwrites("GPF on pointer: 0x");
-  // kputi_r((unsigned int)ptr, 16);
-  kputc('\n');
+  kputi_r((unsigned int)ptr, 16);
+  kputptr("Errant instruction pointer", (void *)ctx->esp);
+  kwrites("Segment selector index: 0x");
+  kputi_r(ctx->error_code, 16);
+  hang();
 }
 
 void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
@@ -79,7 +86,9 @@ void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
     stallion_page_map(ptr, ptr, 0);
     return;
   } else if (info == 0x2) {
-    kputs("Attempt to write to non-present page.");
+    // kputs("Attempt to write to non-present page.");
+    stallion_page_map(ptr, ptr, 0);
+    return;
   } else if (info == 0x4) {
     kputs("Attempt to read non-present page in ring0.");
   } else if (info == 0x5) {

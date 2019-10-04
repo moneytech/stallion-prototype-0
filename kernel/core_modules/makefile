@@ -7,4 +7,4 @@ all: sanity_check.mod
 # 	$(CC) $(CFLAGS) -o $@ $< -lc
 
 %.mod: %.s
-	$(AS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<

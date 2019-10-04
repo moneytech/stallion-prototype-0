@@ -1,4 +1,6 @@
-ret
+.hey:
+  jmp .hey
+; ret
 ; int $0x80
 ; mov $0x25, %eax
 ; pushl %eax
