@@ -4,7 +4,9 @@
 
 typedef unsigned long size_t;
 
-#define NULL 0
+#if !defined(NULL)
+#define NULL ((void *)0)
+#endif
 
 void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
 
