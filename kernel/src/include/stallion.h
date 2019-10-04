@@ -9,6 +9,11 @@
 
 #include "liballoc.h"
 
+#define STALLION_SYSCALL_EXIT 0
+#define STALLION_SYSCALL_READ 1
+#define STALLION_SYSCALL_WRITE 2
+#define STALLION_SYSCALL_BLOCK 3
+
 typedef struct {
   multiboot_uint64_t ram_start;
 } stallion_boot_info_t;
