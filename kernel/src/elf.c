@@ -89,6 +89,8 @@ stallion_elf_binary_t *stallion_elf_binary_create() {
 bool stallion_elf_read_tables(stallion_elf_header_t *header,
                               stallion_elf_binary_t *binary,
                               const char **error_message) {
+  // TODO: Is reading section headers actually necessary?
+
   // Read the headers...
   stallion_elf_section_header_t *section_headers =
       stallion_elf_get_section_header_array(header);
@@ -96,16 +98,37 @@ bool stallion_elf_read_tables(stallion_elf_header_t *header,
   for (uint16_t i = 0; i < header->section_header_entry_count; i++) {
     stallion_elf_section_header_t section_header = section_headers[i];
     if (section_header.type == STALLION_ELF_SECTION_SYMBOL_TABLE) {
-      kputs("Symbol table");
+      // kputs("Symbol table");
     } else if (section_header.type == STALLION_ELF_SECTION_STRING_TABLE) {
-      kputs("String table");
+      // kputs("String table");
     } else if (section_header.type ==
                    STALLION_ELF_SECTION_RELOCATION_NO_ADDEND ||
                section_header.type ==
                    STALLION_ELF_SECTION_RELOCATION_WITH_ADDEND) {
-      kputs("Reloc");
+      // kputs("Reloc");
     }
   }
 
   return true;
+}
+
+bool stallion_elf_read_binary(void *data, size_t size,
+                              stallion_elf_binary_t *binary,
+                              const char **error_message) {
+
+  stallion_elf_header_t *header;
+  if (!stallion_elf_read_header(data, size, &header)) {
+    *error_message = "Could not read ELF header.";
+    return false;
+  } else {
+    if (!stallion_elf_check_supported(header, error_message)) {
+      return false;
+    } else {
+      if (!stallion_elf_read_tables(header, binary, error_message)) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
 }

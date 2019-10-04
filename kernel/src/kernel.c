@@ -33,28 +33,14 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       size_t sz = module->mod_end - module->mod_start;
       uint32_t flags = stallion_page_get_flag_kernel();
       stallion_page_map_region(p, p, sz, flags);
-      // TODO: Handle failure to map region for module
-      // kputs("Module region map failed");
 
-      stallion_elf_header_t *header;
-      if (!stallion_elf_read_header(p, sz, &header)) {
-        // TODO: Handle ELF read failure.
-        kputs("ELF read failure");
+      const char *msg;
+      stallion_elf_binary_t *binary = stallion_elf_binary_create();
+      if (!stallion_elf_read_binary(p, sz, binary, &msg)) {
+        kputs(msg);
       } else {
-        const char *msg;
-        if (!stallion_elf_check_supported(header, &msg)) {
-          // TODO: Properly handle ELF failures here?
-          kputs(msg);
-        } else {
-          stallion_elf_binary_t *binary = stallion_elf_binary_create();
-          if (!stallion_elf_read_tables(header, binary, &msg)) {
-            kputs(msg);
-          } else {
-            kputs("ELF read tables success");
-          }
-        }
+        kputs("Loaded ELF binary.");
       }
-
     } break;
     }
     // Jump to the next one.
