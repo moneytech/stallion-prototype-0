@@ -61,6 +61,13 @@ stallion_elf_get_section_header_array(stallion_elf_header_t *header) {
                                            header->section_header_addr);
 }
 
+stallion_elf_program_header_t *
+stallion_elf_get_program_header_array(stallion_elf_header_t *header) {
+
+  return (stallion_elf_program_header_t *)(((uint32_t)header) +
+                                           header->program_header_addr);
+}
+
 const char *
 stallion_get_section_name(stallion_elf_header_t *header,
                           stallion_elf_section_header_t *section_header) {
@@ -80,8 +87,10 @@ stallion_elf_binary_t *stallion_elf_binary_create() {
   stallion_elf_binary_t *out =
       (stallion_elf_binary_t *)kmalloc(sizeof(stallion_elf_binary_t));
   if (out != NULL) {
+    out->next = NULL;
     out->string_table = NULL;
     out->symbol_table = NULL;
+    out->executable_regions = NULL;
   }
   return out;
 }
@@ -127,6 +136,43 @@ bool stallion_elf_read_binary(void *data, size_t size,
       if (!stallion_elf_read_tables(header, binary, error_message)) {
         return false;
       } else {
+        // Load the program headers.
+        stallion_elf_program_header_t *program_headers =
+            stallion_elf_get_program_header_array(header);
+        for (uint16_t i = 0; i < header->program_header_entry_count; i++) {
+          stallion_elf_program_header_t ph = program_headers[i];
+          if (ph.type == STALLION_ELF_PROGRAM_LOAD) {
+            // TODO: Load flags
+            // load - clear p_memsz bytes at p_vaddr to 0, then copy p_filesz
+            // bytes from p_offset to p_vaddr
+            void *vaddr = (void *)ph.virtual_memory_offset;
+            void *faddr = (void *)data + ph.offset_in_file;
+            // uint32_t flags = stallion_page_get_flag_user();
+            uint32_t flags = stallion_page_get_flag_kernel();
+            if (ph.flags == 0x2) {
+              flags |= stallion_page_get_flag_readwrite();
+            }
+            stallion_page_map_region(vaddr, vaddr, ph.size_in_memory, flags);
+            kmemset(vaddr, 0, ph.size_in_memory);
+            kmemcpy(vaddr, faddr, ph.size_in_file);
+            kputs("LOADED");
+            kputptr("vaddr", vaddr);
+            kputptr("faddr", faddr);
+            kwrites("Copied size: 0x");
+            kputi_r(ph.size_in_file, 16);
+
+            // TODO: Handle out-of-memory
+            stallion_elf_executable_region_t *region =
+                kmalloc(sizeof(stallion_elf_executable_region_t));
+            region->header = ph;
+            region->vaddr = vaddr;
+            region->next = binary->executable_regions;
+            binary->executable_regions = region;
+          } else if (ph.type == STALLION_ELF_PROGRAM_DYNAMIC) {
+            // TODO: Dynamic linking...
+            // kputs("DYNAMIC");
+          }
+        }
         return true;
       }
     }

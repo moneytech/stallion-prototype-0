@@ -23,6 +23,8 @@
 #define STALLION_ELF_SECTION_RELOCATION_NO_ADDEND 6
 #define STALLION_ELF_TABLE_WRITABLE 1
 #define STALLION_ELF_TABLE_MEMORY 2
+#define STALLION_ELF_PROGRAM_LOAD 1
+#define STALLION_ELF_PROGRAM_DYNAMIC 2
 
 typedef struct {
   uint8_t magic[4];
@@ -59,8 +61,20 @@ typedef struct {
   uint32_t entry_size;
 } stallion_elf_section_header_32_t;
 
+typedef struct {
+  uint32_t type;
+  uint32_t offset_in_file;
+  uint32_t virtual_memory_offset;
+  uint32_t undefined;
+  uint32_t size_in_file;
+  uint32_t size_in_memory;
+  uint32_t flags;
+  uint32_t alignment;
+} stallion_elf_program_header_32_t;
+
 typedef stallion_elf_header32_t stallion_elf_header_t;
 typedef stallion_elf_section_header_32_t stallion_elf_section_header_t;
+typedef stallion_elf_program_header_32_t stallion_elf_program_header_t;
 
 typedef struct _stallion_elf_symbol_table {
   struct _stallion_elf_symbol_table *next;
@@ -70,9 +84,17 @@ typedef struct _stallion_elf_string_table {
   struct _stallion_elf_string_table *next;
 } stallion_elf_string_table_t;
 
-typedef struct {
+typedef struct _stallion_elf_executable_region {
+  struct _stallion_elf_executable_region *next;
+  void *vaddr;
+  stallion_elf_program_header_t header;
+} stallion_elf_executable_region_t;
+
+typedef struct _stallion_elf_binary {
+  struct _stallion_elf_binary *next;
   stallion_elf_symbol_table_t *symbol_table;
   stallion_elf_string_table_t *string_table;
+  stallion_elf_executable_region_t *executable_regions;
 } stallion_elf_binary_t;
 
 bool stallion_elf_read_header(void *data, size_t size,
@@ -83,6 +105,9 @@ bool stallion_elf_check_supported(stallion_elf_header_t *header,
 
 stallion_elf_section_header_t *
 stallion_elf_get_section_header_array(stallion_elf_header_t *header);
+
+stallion_elf_program_header_t *
+stallion_elf_get_program_header_array(stallion_elf_header_t *header);
 
 stallion_elf_binary_t *stallion_elf_binary_create();
 

@@ -34,6 +34,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       uint32_t flags = stallion_page_get_flag_kernel();
       stallion_page_map_region(p, p, sz, flags);
 
+      // Load the ELF binary.
       const char *msg;
       stallion_elf_binary_t *binary = stallion_elf_binary_create();
       if (!stallion_elf_read_binary(p, sz, binary, &msg)) {
