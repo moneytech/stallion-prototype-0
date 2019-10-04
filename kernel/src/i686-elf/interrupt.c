@@ -24,6 +24,7 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     case 0x6: {
       kputs("Invalid opcode.");
       kputptr("Errant instruction pointer", (void *)ctx->esp);
+      hang();
     } break;
     default: {
       kwrites("Unhandled exception: ");
@@ -92,6 +93,7 @@ void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
     kputs("Attempt to read non-present page.");
     kputs("Resolving by mapping page.");
     stallion_page_map(ptr, ptr, 0);
+    hang();
     return;
   } else if (info == 0x2) {
     kputs("Attempt to write to non-present page.");

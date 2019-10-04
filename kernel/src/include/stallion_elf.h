@@ -92,6 +92,7 @@ typedef struct _stallion_elf_executable_region {
 
 typedef struct _stallion_elf_binary {
   struct _stallion_elf_binary *next;
+  stallion_elf_header_t *header;
   stallion_elf_symbol_table_t *symbol_table;
   stallion_elf_string_table_t *string_table;
   stallion_elf_executable_region_t *executable_regions;

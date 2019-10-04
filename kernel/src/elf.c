@@ -88,6 +88,7 @@ stallion_elf_binary_t *stallion_elf_binary_create() {
       (stallion_elf_binary_t *)kmalloc(sizeof(stallion_elf_binary_t));
   if (out != NULL) {
     out->next = NULL;
+    out->header = NULL;
     out->string_table = NULL;
     out->symbol_table = NULL;
     out->executable_regions = NULL;
@@ -130,6 +131,7 @@ bool stallion_elf_read_binary(void *data, size_t size,
     *error_message = "Could not read ELF header.";
     return false;
   } else {
+    binary->header = header;
     if (!stallion_elf_check_supported(header, error_message)) {
       return false;
     } else {
