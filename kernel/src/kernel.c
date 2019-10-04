@@ -27,7 +27,16 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   while (tag->type != MULTIBOOT_TAG_TYPE_END) {
     switch (tag->type) {
     case MULTIBOOT_TAG_TYPE_MODULE: {
+      // We need to be able to read the memory, so page map it (read only).
       struct multiboot_tag_module *module = (struct multiboot_tag_module *)tag;
+      void *p = (void *)module->mod_start;
+      size_t sz = module->mod_end - module->mod_start;
+      uint32_t flags = stallion_page_get_flag_kernel();
+      if (!stallion_page_map_region(p, p, sz, flags)) {
+        // TODO: Handle failure to map region for module
+      } else {
+        
+      }
     } break;
     }
     // Jump to the next one.
