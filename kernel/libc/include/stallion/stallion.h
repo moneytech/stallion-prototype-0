@@ -1,0 +1,4 @@
+#ifndef STALLION_LIBC_STALLION_H
+#define STALLION_LIBC_STALLION_H
+#define STALLION_OS
+#endif
