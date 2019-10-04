@@ -25,7 +25,15 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   while (tag->type != MULTIBOOT_TAG_TYPE_END) {
     switch (tag->type) {
     case MULTIBOOT_TAG_TYPE_MODULE: {
+      // TODO: Pass command-line arguments
       struct multiboot_tag_module *module = (struct multiboot_tag_module *)tag;
+      void *p = (void *)module->mod_start;
+      stallion_page_map_region(p, p, module->mod_end - module->mod_start,
+                               stallion_page_get_flag_kernel() |
+                                   stallion_page_get_flag_readwrite());
+      typedef void (*Unsafe)();
+      Unsafe unsafe = (Unsafe)module->mod_start;
+      unsafe();
     } break;
     }
     // Jump to the next one.

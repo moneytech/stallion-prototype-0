@@ -4,7 +4,7 @@ export CFLAGS+=-I$(shell pwd)/../libc/include \
 all: sanity_check.mod
 
 %.mod: %.o
-	$(LD) -o $@ $<
+	$(LD) --oformat binary -o $@ $<
 	# $(CC) $(CFLAGS) -o $@ $< -lc
 
 # %.mod: %.s
