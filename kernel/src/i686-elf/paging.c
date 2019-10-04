@@ -85,6 +85,41 @@ size_t stallion_page_map_region(void *phys, void *virt, size_t size,
   return count;
 }
 
+bool stallion_page_unmap(void *virt) {
+  uint32_t pde_index, pte_index;
+  stallion_page_get_indices(virt, &pde_index, &pte_index);
+  if (pde_index >= PAGE_DIRECTORY_SIZE)
+    return true;
+  if (pte_index >= PAGE_TABLE_SIZE)
+    return true;
+
+  // Determine if the directory is already present, by OR-ing against 0x1.
+  if ((page_directory[pde_index] & 0x1) != 0x1) {
+    return true;
+  }
+
+  // Check if the page mapping is present. If so, return false.
+  uint32_t *pt = &page_tables[pde_index].pages[pte_index];
+
+  // Otherwise, set the value, and return true.
+  *pt = 0x0;
+  return true;
+}
+
+size_t stallion_page_unmap_region(void *virt, size_t size) {
+  size_t count = 0;
+  void *orig_virt = virt;
+  while (count < size) {
+    if (stallion_page_unmap(virt)) {
+      virt += PAGE_SIZE;
+      count += PAGE_SIZE;
+    } else {
+      break;
+    }
+  }
+  return count;
+}
+
 int liballoc_lock() { return 0; }
 
 int liballoc_unlock() { return 0; }
@@ -139,8 +174,8 @@ int liballoc_free(void *base_ptr, int page_count) {
   // TODO: Free page directory if it's unused.
   for (int i = 0; i < page_count; i++) {
     void *ptr = base_ptr + (i * PAGE_SIZE);
-    uint32_t pde_index, pte_index;
-    stallion_page_get_indices(ptr, &pde_index, &pte_index);
-    page_tables[pde_index].pages[pte_index] = 0x0;
+    if (!stallion_page_unmap(ptr))
+      return 1;
   }
+  return 0;
 }
