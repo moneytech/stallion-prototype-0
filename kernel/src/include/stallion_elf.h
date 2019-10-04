@@ -62,6 +62,19 @@ typedef struct {
 typedef stallion_elf_header32_t stallion_elf_header_t;
 typedef stallion_elf_section_header_32_t stallion_elf_section_header_t;
 
+typedef struct _stallion_elf_symbol_table {
+  struct _stallion_elf_symbol_table *next;
+} stallion_elf_symbol_table_t;
+
+typedef struct _stallion_elf_string_table {
+  struct _stallion_elf_string_table *next;
+} stallion_elf_string_table_t;
+
+typedef struct {
+  stallion_elf_symbol_table_t *symbol_table;
+  stallion_elf_string_table_t *string_table;
+} stallion_elf_binary_t;
+
 bool stallion_elf_read_header(void *data, size_t size,
                               stallion_elf_header_t **header);
 
@@ -71,8 +84,14 @@ bool stallion_elf_check_supported(stallion_elf_header_t *header,
 stallion_elf_section_header_t *
 stallion_elf_get_section_header_array(stallion_elf_header_t *header);
 
-const char *
-stallion_get_section_name(stallion_elf_header_t *header,
-                          stallion_elf_section_header_t *section_header);
+stallion_elf_binary_t *stallion_elf_binary_create();
+
+bool stallion_elf_read_tables(stallion_elf_header_t *header,
+                              stallion_elf_binary_t *binary,
+                              const char **error_message);
+
+// const char *
+// stallion_get_section_name(stallion_elf_header_t *header,
+//                           stallion_elf_section_header_t *section_header);
 
 #endif

@@ -72,6 +72,40 @@ stallion_get_section_name(stallion_elf_header_t *header,
   stallion_elf_section_header_t str_header =
       stallion_elf_get_section_header_array(header)[header->section_name_index];
 
-  char **str_table = (char *)((uint32_t)&str_header + str_header.offset);
+  char **str_table = (char **)((uint32_t)&str_header + str_header.offset);
   return (const char *)(str_table[section_header->name_addr]);
+}
+
+stallion_elf_binary_t *stallion_elf_binary_create() {
+  stallion_elf_binary_t *out =
+      (stallion_elf_binary_t *)kmalloc(sizeof(stallion_elf_binary_t));
+  if (out != NULL) {
+    out->string_table = NULL;
+    out->symbol_table = NULL;
+  }
+  return out;
+}
+
+bool stallion_elf_read_tables(stallion_elf_header_t *header,
+                              stallion_elf_binary_t *binary,
+                              const char **error_message) {
+  // Read the headers...
+  stallion_elf_section_header_t *section_headers =
+      stallion_elf_get_section_header_array(header);
+
+  for (uint16_t i = 0; i < header->section_header_entry_count; i++) {
+    stallion_elf_section_header_t section_header = section_headers[i];
+    if (section_header.type == STALLION_ELF_SECTION_SYMBOL_TABLE) {
+      kputs("Symbol table");
+    } else if (section_header.type == STALLION_ELF_SECTION_STRING_TABLE) {
+      kputs("String table");
+    } else if (section_header.type ==
+                   STALLION_ELF_SECTION_RELOCATION_NO_ADDEND ||
+               section_header.type ==
+                   STALLION_ELF_SECTION_RELOCATION_WITH_ADDEND) {
+      kputs("Reloc");
+    }
+  }
+
+  return true;
 }
