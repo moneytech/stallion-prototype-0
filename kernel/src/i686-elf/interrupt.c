@@ -1,6 +1,6 @@
 #include <stallion.h>
 #include <stallion_i686_elf.h>
-#include <stallion/stallion_api.h>
+// #include <stallion/stallion_api.h>
 
 #define IRQ_INVALID_TSS 0xa
 #define ISR_GENERAL_PROTECTION_FAULT 0xd
@@ -22,7 +22,7 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     } break;
     default: {
       kwrites("Unhandled ISR interrupt: ");
-      kputi(ctx->number);
+      kwritei(ctx->number);
       kwrites("; error code=");
       kputi(ctx->error_code);
       kputc('\n');
@@ -69,12 +69,15 @@ void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
   uint8_t info = ctx->error_code;
   void *ptr = stallion_get_page_fault_pointer();
   uint32_t page_index = ((uint32_t)ptr) / stallion_page_get_page_size();
-  kputptr("Page fault on pointer", ptr);
-  kwrites("Page index: 0x");
-  kputi_r(page_index, 16);
-  kputc('\n');
+  // kputptr("Page fault on pointer", ptr);
+  // kwrites("Page index: 0x");
+  // kputi_r(page_index, 16);
   if (info == 0x0) {
-    kputs("Attempt to read non-present page.");
+    // TODO: Determine when to map as user page.
+    // kputs("Attempt to read non-present page.");
+    // kputs("Resolving by mapping page.");
+    stallion_page_map(ptr, ptr, 0);
+    return;
   } else if (info == 0x2) {
     kputs("Attempt to write to non-present page.");
   } else if (info == 0x4) {

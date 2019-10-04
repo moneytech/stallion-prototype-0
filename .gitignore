@@ -2,6 +2,7 @@
 *.a
 *.bin
 *.iso
+*.mod
 .isodir/
 .vscode/
 bochsrc

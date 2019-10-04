@@ -16,7 +16,7 @@ all: $(KERNEL)
 
 clean:
 	find . \( -name '*.o' -o -name '*.a' \
-		-o -name '*.bin' -o -name '*.iso' \) \
+		-o -name '*.bin' -o -name '*.iso' -o -name '*.mod' \) \
 		-delete
 	$(MAKE) -C kernel clean
 
@@ -35,4 +35,4 @@ qemu: kernel-debug
 		-d int -no-shutdown -s -S
 
 qemu-no-gdb: $(KERNEL)
-	$(QEMU) -cdrom $< -no-reboot -no-shutdown # -serial file:/dev/stdout
+	$(QEMU) -cdrom $< -no-reboot -no-shutdown -serial file:/dev/stdout
