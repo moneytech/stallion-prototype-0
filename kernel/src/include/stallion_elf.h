@@ -14,6 +14,15 @@
 #define STALLION_ELF_ATTR_CORE 4
 #define STALLION_ELF_ISA_X86 3
 #define STALLION_ELF_ISA_X64 0x32
+#define STALLION_ELF_SECTION_NULL 0
+#define STALLION_ELF_SECTION_PROGRAM_INFO 1
+#define STALLION_ELF_SECTION_SYMBOL_TABLE 2
+#define STALLION_ELF_SECTION_STRING_TABLE 3
+#define STALLION_ELF_SECTION_RELOCATION_WITH_ADDEND 4
+#define STALLION_ELF_SECTION_NOT_PRESENT 5
+#define STALLION_ELF_SECTION_RELOCATION_NO_ADDEND 6
+#define STALLION_ELF_TABLE_WRITABLE 1
+#define STALLION_ELF_TABLE_MEMORY 2
 
 typedef struct {
   uint8_t magic[4];
@@ -37,12 +46,33 @@ typedef struct {
   uint16_t section_name_index;
 } stallion_elf_header32_t;
 
+typedef struct {
+  uint32_t name_addr;
+  uint32_t type;
+  uint32_t flags;
+  uint32_t addr;
+  uint32_t offset;
+  uint32_t size;
+  uint32_t link;
+  uint32_t info;
+  uint32_t addr_align;
+  uint32_t entry_size;
+} stallion_elf_section_header_32_t;
+
 typedef stallion_elf_header32_t stallion_elf_header_t;
+typedef stallion_elf_section_header_32_t stallion_elf_section_header_t;
 
 bool stallion_elf_read_header(void *data, size_t size,
                               stallion_elf_header_t **header);
 
 bool stallion_elf_check_supported(stallion_elf_header_t *header,
                                   const char **error_message);
+
+stallion_elf_section_header_t *
+stallion_elf_get_section_header_array(stallion_elf_header_t *header);
+
+const char *
+stallion_get_section_name(stallion_elf_header_t *header,
+                          stallion_elf_section_header_t *section_header);
 
 #endif

@@ -32,24 +32,44 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       void *p = (void *)module->mod_start;
       size_t sz = module->mod_end - module->mod_start;
       uint32_t flags = stallion_page_get_flag_kernel();
-      if (!stallion_page_map_region(p, p, sz, flags)) {
-        // TODO: Handle failure to map region for module
-        kputs("Module region map failed");
+      stallion_page_map_region(p, p, sz, flags);
+      // TODO: Handle failure to map region for module
+      // kputs("Module region map failed");
+
+      stallion_elf_header_t *header;
+      if (!stallion_elf_read_header(p, sz, &header)) {
+        // TODO: Handle ELF read failure.
+        kputs("ELF read failure");
       } else {
-        stallion_elf_header_t *header;
-        if (!stallion_elf_read_header(p, sz, &header)) {
-          // TODO: Handle ELF read failure.
-          kputs("ELF read failure");
+        const char *msg;
+        if (!stallion_elf_check_supported(header, &msg)) {
+          // TODO: Properly handle ELF failures here?
+          kputs(msg);
         } else {
-          const char *msg;
-          if (!stallion_elf_check_supported(header, &msg)) {
-            // TODO: Properly handle ELF failures here?
-            kputs(msg);
-          } else {
-            kputs("ELF read/supported success");
+          kputs("ELF read/supported success");
+
+          // Read the headers...
+          stallion_elf_section_header_t *section_headers =
+              stallion_elf_get_section_header_array(header);
+
+          for (uint16_t i = 0; i < header->section_header_entry_count; i++) {
+            stallion_elf_section_header_t section_header = section_headers[i];
+            if (section_header.type == STALLION_ELF_SECTION_SYMBOL_TABLE) {
+              kputs("Symbol table");
+            } else if (section_header.type ==
+                       STALLION_ELF_SECTION_STRING_TABLE) {
+              kputs("String table");
+            } else if (section_header.type ==
+                           STALLION_ELF_SECTION_RELOCATION_NO_ADDEND ||
+                       section_header.type ==
+                           STALLION_ELF_SECTION_RELOCATION_WITH_ADDEND) {
+
+              kputs("Reloc");
+            }
           }
         }
       }
+
     } break;
     }
     // Jump to the next one.

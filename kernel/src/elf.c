@@ -54,3 +54,24 @@ bool stallion_elf_check_supported(stallion_elf_header_t *header,
 
   return true;
 }
+
+stallion_elf_section_header_t *
+stallion_elf_get_section_header_array(stallion_elf_header_t *header) {
+  return (stallion_elf_section_header_t *)(((uint32_t)header) +
+                                           header->section_header_addr);
+}
+
+const char *
+stallion_get_section_name(stallion_elf_header_t *header,
+                          stallion_elf_section_header_t *section_header) {
+  if (section_header->name_addr == 0)
+    return "<unnamed>";
+  else if (header->section_name_index == 0)
+    return "<unnamed>";
+
+  stallion_elf_section_header_t str_header =
+      stallion_elf_get_section_header_array(header)[header->section_name_index];
+
+  char **str_table = (char *)((uint32_t)&str_header + str_header.offset);
+  return (const char *)(str_table[section_header->name_addr]);
+}
