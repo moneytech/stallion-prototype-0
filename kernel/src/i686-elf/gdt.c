@@ -19,7 +19,7 @@ typedef struct {
 #define LIMIT_4GB 0xffffffff
 
 gdt_descriptor_t gdt_descriptor;
-gdt_entry_t gdt[5];
+gdt_entry_t gdt[6];
 
 /** Fills a GDT entry. */
 static inline void gdt_describe(uint32_t i, uint32_t base, uint32_t limit,
@@ -48,6 +48,20 @@ void stallion_init_gdt(stallion_t *os) {
   gdt_describe(2, 0, LIMIT_4GB, 0x92, 0xcf);
   gdt_describe(3, 0, LIMIT_4GB, 0xfa, 0xcf);
   gdt_describe(4, 0, LIMIT_4GB, 0xf2, 0xcf);
+
+  // Map the TSS
+  uint32_t tss_base = (uint32_t)&stallion_tss;
+  gdt_describe(5, tss_base, tss_base + sizeof(stallion_tss), 0xe9, 0);
+
+  // TSS Setup.
+  stallion_tss.ss0 = 0x10;
+  stallion_tss.esp0 = 0;
+  stallion_tss.cs = 0x0b;
+  stallion_tss.ss = 0x13;
+  stallion_tss.es = 0x13;
+  stallion_tss.ds = 0x13;
+  stallion_tss.fs = 0x13;
+  stallion_tss.gs = 0x13;
 
   // Describe the actual GDT.
   gdt_descriptor.offset = (uint32_t)&gdt;

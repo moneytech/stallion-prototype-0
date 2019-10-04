@@ -1,6 +1,5 @@
 #include <multiboot2.h>
-#include <stallion.h>
-#include <stallion_elf.h>
+#include <stallion_process.h>
 
 extern uint32_t startkernel;
 
@@ -61,10 +60,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   while (module != NULL) {
     void *entry_point = (void *)module->header->entry_point;
     kputptr("Module entry", entry_point);
-
-    typedef void (*Unsafe)();
-    Unsafe unsafe = (Unsafe)entry_point;
-    unsafe();
+    stallion_enter_ring3(entry_point);
     module = module->next;
   }
 

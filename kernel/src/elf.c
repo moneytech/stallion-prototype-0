@@ -149,8 +149,8 @@ bool stallion_elf_read_binary(void *data, size_t size,
             // bytes from p_offset to p_vaddr
             void *vaddr = (void *)ph.virtual_memory_offset;
             void *faddr = (void *)data + ph.offset_in_file;
-            // uint32_t flags = stallion_page_get_flag_user();
-            uint32_t flags = stallion_page_get_flag_kernel();
+            uint32_t flags = stallion_page_get_flag_user();
+            // uint32_t flags = stallion_page_get_flag_kernel();
             if (ph.flags == 0x2) {
               flags |= stallion_page_get_flag_readwrite();
             }

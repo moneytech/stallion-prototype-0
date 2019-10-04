@@ -16,6 +16,7 @@ typedef struct {
 } term_line_t;
 
 x86_char_t *video_memory = (x86_char_t *)0xb8000;
+// x86_char_t *video_memory = (x86_char_t *)0xC03FF000;
 term_line_t lines[ROWS];
 uint8_t term_init = 0;
 uint8_t line_no = 0;
