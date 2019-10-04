@@ -34,14 +34,20 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       uint32_t flags = stallion_page_get_flag_kernel();
       if (!stallion_page_map_region(p, p, sz, flags)) {
         // TODO: Handle failure to map region for module
-          kputs("Module region map failed");
+        kputs("Module region map failed");
       } else {
         stallion_elf_header_t *header;
         if (!stallion_elf_read_header(p, sz, &header)) {
           // TODO: Handle ELF read failure.
           kputs("ELF read failure");
         } else {
-          kputs("ELF read success");
+          const char *msg;
+          if (!stallion_elf_check_supported(header, &msg)) {
+            // TODO: Properly handle ELF failures here?
+            kputs(msg);
+          } else {
+            kputs("ELF read/supported success");
+          }
         }
       }
     } break;
