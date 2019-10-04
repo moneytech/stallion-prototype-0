@@ -1,10 +1,11 @@
+export LIBC_DIR=$(shell pwd)/../libc
 export CFLAGS+=-I$(shell pwd)/../libc/include \
-	 -L$(shell pwd)/../libc #-ffreestanding -nostdlib
+	 -L$(LIBC_DIR) #-ffreestanding -nostdlib
 
 all: sanity_check.mod
 
 %.mod: %.o
-	$(LD) --oformat binary -o $@ $<
+	$(LD) -L$(LIBC_DIR) --oformat binary -o $@ $< -lc
 	# $(CC) $(CFLAGS) -o $@ $< -lc
 
 # %.mod: %.s

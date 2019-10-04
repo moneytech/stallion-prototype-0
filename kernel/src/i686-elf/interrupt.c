@@ -1,3 +1,4 @@
+#include <stallion/stallion.h>
 #include <stallion.h>
 #include <stallion_i686_elf.h>
 // #include <stallion/stallion_api.h>
@@ -52,6 +53,13 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
       outb(0xa0, 0x20);
   } else if (ctx->number == 128) {
     kputs("GOT A SYSCALL!!!!");
+    if (ctx->eax == STALLION_SYSCALL_EXIT) {
+      kwrites("Exit code=0x");
+      kputi_r(ctx->ebx, 16);
+    } else {
+      kwrites("Unknown code: 0x");
+      kputi_r(ctx->eax, 16);
+    }
   } else {
     kwrites("Got unsupported interrupt: 0x");
     kputi_r(ctx->number, 16);

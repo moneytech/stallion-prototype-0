@@ -1,4 +1,4 @@
-export CFLAGS+=-I$(shell pwd)/include
+export CFLAGS+=-I$(shell pwd)/include -I$(shell pwd)/libc/include
 KERNEL=src/stallion.bin
 LIBC_TARGETS=libc/libc.a src/libm.a
 

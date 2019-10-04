@@ -1,5 +1,5 @@
 export CFLAGS=-I$(shell pwd)/include
-LIBC_OBJECTS=string.o syscall.s
+LIBC_OBJECTS=string.o syscall.o
 
 all: libc.a libm.a crt0.o
 
