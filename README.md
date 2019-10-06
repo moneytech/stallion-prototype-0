@@ -1,30 +1,13 @@
 # stallion
-Microkernel. Experimental/educational.
+Basic kernel in C. Eventually will be a basis for unikernels.
 
-## Building
+## Goals
+The main goal for this project was really just to get some
+semblance of a working operating system.
 
-```bash
-mkdir -p build
-cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../kernel/cmake/i686_elf_gcc.cmake ..
-cmake --build . -- -j4
-```
+It would truly be a fool's errand to try to compete with Windows,
+Linux, MacOS, etc., so that's not really a possibility I've considered.
 
-## Running
-Opens `qemu-system-i386` (or whatever is configured):
-
-```bash
-cmake --build . --target run_qemu
-```
-### Building `grub` for `clang`
-It's actually pretty much not possible, so unless you already have GRUB installed,
-you can't build it from source on Mac. :/
-
-This was my attempt at getting a compile:
-
-```bash
-../grub/configure --disable-werror TARGET_CC="clang" \
-TARGET_CFLAGS="-target i686-elf -B$(dirname $(dirname $(which i686-elf-ar)))" \
-TARGET_OBJCOPY=i686-elf-objcopy TARGET_STRIP=i686-elf-strip TARGET_NM=i686-elf-nm \
-TARGET_RANLIB=i686-elf-ranlib --target=i686-elf 
-```
+Where there is still room for innovation, however, is containerization
+and process isolation. Stallion could potentially fill a niche as a
+POSIX-compatible environment for running single programs.
