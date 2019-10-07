@@ -42,3 +42,9 @@ void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
     // stallion_enter_ring3(entry_point);
   }
 }
+
+
+void stallion_return_from_ring3() {
+  kputs("BACK FROM RING3");
+  hang();
+}

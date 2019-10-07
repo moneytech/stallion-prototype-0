@@ -7,7 +7,7 @@
 #define ISR_GENERAL_PROTECTION_FAULT 0xd
 #define ISR_PAGE_FAULT 0xe
 
-void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
+uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   // asm volatile("cli");
   // Acknowledge the PIC; send EOI
   outb(0x20, 0x20);
@@ -61,6 +61,7 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     if (ctx->eax == STALLION_SYSCALL_EXIT) {
       kwrites("Exit code=0x");
       kputi_r(ctx->ebx, 16);
+      return 1;
     } else {
       kwrites("Unknown code: 0x");
       kputi_r(ctx->eax, 16);
@@ -70,6 +71,7 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     kputi_r(ctx->number, 16);
     kputc('\n');
   }
+  return 0;
   // asm volatile("sti");
 }
 

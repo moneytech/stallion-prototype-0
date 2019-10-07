@@ -38,6 +38,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
         kputs(msg);
       }
 
+      // TODO: Handle errors
       stallion_scheduler_enqueue_binary(&os.scheduler, binary);
     } break;
     }

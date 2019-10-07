@@ -134,6 +134,10 @@ interrupt_setup:
 	movl %ebx, (%esp)
 	call stallion_interrupt_handler
 
+	# If we didn't return 0, then don't return to user space.
+	cmp $0x0, %eax
+	jne stallion_return_from_ring3
+
 	movl %ebx, %esp
 
 	popl %ebp
