@@ -16,15 +16,16 @@ stallion_tss_flush:
     # EFLAGS
     # CS
     # EIP
-  cli
+  # cli
   mov $0x23, %ax # Also set RPL to 3 (User data=0x20)
   mov %ax, %ds
   mov %ax, %es
   mov %ax, %fs
   mov %ax, %gs # User data seg
 
+  mov %esp, %eax
   pushl $0x23 # SS (select the same segment as above)
-  pushl %esp # ESP
+  pushl %eax # ESP
   pushf # EFLAGS
 
   pushl $0x1b # CS User code seg

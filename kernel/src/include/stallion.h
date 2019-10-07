@@ -27,6 +27,7 @@ typedef struct _stallion {
 
 extern uint32_t startkernel;
 extern uint32_t endkernel;
+extern stallion_t *global_os; // TODO: Any alternative to a global?
 
 void stallion_init(stallion_t *os);
 void stallion_scheduler_run(stallion_scheduler_t *scheduler);

@@ -59,8 +59,8 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   } else if (ctx->number == 128) {
     kputs("GOT A SYSCALL!!!!");
     if (ctx->eax == STALLION_SYSCALL_EXIT) {
-      kwrites("Exit code=0x");
-      kputi_r(ctx->ebx, 16);
+      // Kill the process.
+      stallion_kill_current_process(&global_os->scheduler);
       return 1;
     } else {
       kwrites("Unknown code: 0x");

@@ -8,6 +8,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   }
 
   stallion_t os;
+  global_os = &os;
   stallion_init(&os);
   stallion_early_init(&os, magic, addr);
   kcls();
