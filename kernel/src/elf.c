@@ -148,26 +148,19 @@ bool stallion_elf_read_binary(void *data, size_t size,
             // bytes from p_offset to p_vaddr
             void *vaddr = (void *)ph.virtual_memory_offset;
             void *faddr = (void *)data + ph.offset_in_file;
-            void *phys_addr = vaddr;
+            // void *phys_addr = vaddr;
+            void *phys_addr = faddr;
             // uint32_t flags = stallion_page_get_flag_user();
             uint32_t flags = stallion_page_get_flag_kernel();
             // Only make pages R/W if the section is writable.
             if (ph.flags == 0x2) {
               flags |= stallion_page_get_flag_readwrite();
             }
-            stallion_page_map_region(vaddr, phys_addr, ph.size_in_memory, flags);
-            kmemcpy(vaddr, faddr, ph.size_in_file);
-            // Instead of filling the remaining space with zeroes, load it
-            // with RET instructions.
-            kmemset(vaddr + ph.size_in_file, 0, ph.size_in_memory - ph.size_in_file);
-            kputs("LOADED");
-            kputptr("vaddr", vaddr);
-            kputptr("phys_addr", phys_addr);
-            kputptr("faddr", faddr);
-            kwrites("Copied size: 0x");
-            kputi_r(ph.size_in_file, 16);
-            kwrites("Memory size: 0x");
-            kputi_r(ph.size_in_memory, 16);
+
+            // Instead of copying the memory to a new page, we can just
+            // directly map it into virtual memory.
+            stallion_page_map_region(phys_addr, vaddr, ph.size_in_memory,
+                                     flags);
 
             // TODO: Handle out-of-memory
             stallion_elf_executable_region_t *region =

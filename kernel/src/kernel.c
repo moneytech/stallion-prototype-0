@@ -10,9 +10,6 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   }
 
   stallion_t os;
-
-  kputs("Correct magic - Multiboot2 detected.");
-
   stallion_early_init(&os, magic, addr);
 
   // Gather all modules, and execute them.
