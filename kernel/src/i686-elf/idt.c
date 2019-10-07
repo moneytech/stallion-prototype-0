@@ -14,7 +14,8 @@
 #define DESCRIPTOR_PRIVILEGE_RING0 0b00000000
 #define DESCRIPTOR_PRIVILEGE_RING1 0b00100000
 #define DESCRIPTOR_PRIVILEGE_RING2 0b01000000
-#define DESCRIPTOR_PRIVILEGE_RING3 0b01100000
+// #define DESCRIPTOR_PRIVILEGE_RING3 0b01100000
+#define DESCRIPTOR_PRIVILEGE_RING3 0x60
 #define DESCRIPTOR_PRESENT 0b10000000
 
 // PIC stuff
@@ -97,8 +98,7 @@ extern void irq15();
   (ptr).selector = (sel);                                                      \
   (ptr).always_zero = 0;                                                       \
   (ptr).type_attr = (INTERRUPT_GATE_32_BIT | DESCRIPTOR_PRIVILEGE_RING##ring | \
-                     DESCRIPTOR_PRESENT) |                                     \
-                    0x60;                                                      
+                     DESCRIPTOR_PRESENT);
 //
 idt_entry_t idt_entries[256];
 idt_descriptor_t idt_descriptor;
@@ -119,7 +119,7 @@ static void irq_enable(uint8_t no) {
   outb(pic + 1, value);
 }
 
-void stallion_init_idt(stallion_t* os) {
+void stallion_init_idt(stallion_t *os) {
   // Before we load the IDT, remap the PIC.
   int pic1 = 0x20, pic2 = 0x28;
 
@@ -198,8 +198,9 @@ void stallion_init_idt(stallion_t* os) {
     irq_enable(i);
   }
 
-  // Enable syscall 0x80.
+  // Enable syscall 0x80. This must have DPL=3
   DECLARE_ISR(128);
+  idt_entries[128].type_attr |= DESCRIPTOR_PRIVILEGE_RING3;
   irq_enable(128);
 
   // IDT time.
