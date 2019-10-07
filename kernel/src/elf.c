@@ -144,28 +144,13 @@ bool stallion_elf_read_binary(void *data, size_t size,
         for (uint16_t i = 0; i < header->program_header_entry_count; i++) {
           stallion_elf_program_header_t ph = program_headers[i];
           if (ph.type == STALLION_ELF_PROGRAM_LOAD) {
-            // load - clear p_memsz bytes at p_vaddr to 0, then copy p_filesz
-            // bytes from p_offset to p_vaddr
-            uint32_t flags = stallion_page_get_flag_user() | stallion_page_get_flag_readwrite();
+            // Instead of copying data, just directly load the section
+            // into virtual memory.
+            uint32_t flags = stallion_page_get_flag_kernel() |
+                             stallion_page_get_flag_readwrite();
             void *vaddr = (void *)ph.virtual_memory_offset;
             void *faddr = (void *)data + ph.offset_in_file;
-            void *phys_addr = kmallocf(ph.size_in_memory, flags);
-            kmemcpy(phys_addr, faddr, ph.size_in_file);
-            // Instead of filling the remaining space with zeroes, load it
-            // with RET instructions.
-            kmemset(phys_addr + ph.size_in_file, 0xc3,
-                    ph.size_in_memory - ph.size_in_file);
-
-            // Allocate the region, and write data.
-            // stallion_page_map_region(faddr, vaddr, ph.size_in_memory, flags);
-            // stallion_page_map_region(phys_addr, vaddr, ph.size_in_memory,
-            //                          flags);
-            // Only make pages R/W if the section is writable.
-            // if (ph.flags != 0x2) {
-            //   flags |= stallion_page_get_flag_readwrite();
-            //   stallion_page_mark_readonly(phys_addr, vaddr,
-            //   ph.size_in_memory);
-            // }
+            stallion_page_map_region(faddr, vaddr, ph.size_in_memory, flags);
 
             // TODO: Handle out-of-memory
             stallion_elf_executable_region_t *region =
