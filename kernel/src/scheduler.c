@@ -36,6 +36,9 @@ void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
     // TODO: Resume processes using saved instruction pointer.
     void *entry_point = (void *)proc->binary->header->entry_point;
     proc->started = true;
-    stallion_enter_ring3(entry_point);
+    typedef void (*Unsafe)();
+    Unsafe unsafe = entry_point;
+    unsafe();
+    // stallion_enter_ring3(entry_point);
   }
 }
