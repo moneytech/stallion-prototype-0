@@ -1,4 +1,4 @@
-#include <stallion_elf.h>
+#include <stallion.h>
 
 bool stallion_elf_read_header(void *data, size_t size,
                               stallion_elf_header_t **header) {

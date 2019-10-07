@@ -12,6 +12,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   stallion_t os;
   stallion_init(&os);
   stallion_early_init(&os, magic, addr);
+  kcls();
 
   // Gather all modules, and execute them.
   // Note that we haven't page-mapped these regions yet, so we'll have to
@@ -50,16 +51,5 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
     stallion_page_map(tag, tag, stallion_page_get_flag_kernel());
   }
 
-  // Next, start each loaded module.
-  // TODO: Pass command line
-  // stallion_elf_binary_t *module = elf_modules;
-  // while (module != NULL) {
-  //   void *entry_point = (void *)module->header->entry_point;
-  //   kputptr("Entry point", entry_point);
-  //   typedef void (*Unsafe)();
-  //   Unsafe unsafe = entry_point;
-  //   unsafe();
-  //   // stallion_enter_ring3(entry_point);
-  //   module = module->next;
-  // }
+  // TODO: Next, run processes until the end of time, using the scheduler.
 }
