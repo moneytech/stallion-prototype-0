@@ -22,9 +22,13 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
       stallion_handle_page_fault(ctx);
     } break;
     case 0x6: {
+      char *ptr = (char *)ctx->esp;
       kputs("Invalid opcode.");
-      kputptr("Errant instruction pointer", (void *)ctx->esp);
-      hang();
+      kputptr("Errant instruction pointer", ptr);
+      // Not really sure how to handle this, but just overwrite it with a
+      // NOP.
+      *ptr = 0x90;
+      // hang();
     } break;
     default: {
       kwrites("Unhandled exception: ");
@@ -72,9 +76,7 @@ void stallion_interrupt_handler(stallion_interrupt_t *ctx) {
 void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
   // If the page requested was not present, then cr2 will
   // specify the faulty address.
-  void *ptr = stallion_get_page_fault_pointer();
-  kwrites("GPF on pointer: 0x");
-  kputi_r((unsigned int)ptr, 16);
+  kputs("Encountered general protection fault!");
   kputptr("Errant instruction pointer", (void *)ctx->esp);
   kwrites("Segment selector index: 0x");
   kputi_r(ctx->error_code, 16);
