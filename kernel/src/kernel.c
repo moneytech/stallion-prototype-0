@@ -10,6 +10,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   }
 
   stallion_t os;
+  stallion_init(&os);
   stallion_early_init(&os, magic, addr);
 
   // Gather all modules, and execute them.
@@ -20,8 +21,6 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   stallion_page_map(tag, tag, stallion_page_get_flag_kernel());
 
   // Find all modules, and load them as ELF binaries, in user mode.
-  stallion_elf_binary_t *elf_modules = NULL;
-
   while (tag->type != MULTIBOOT_TAG_TYPE_END) {
     switch (tag->type) {
     case MULTIBOOT_TAG_TYPE_MODULE: {
@@ -39,9 +38,8 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       if (!stallion_elf_read_binary(p, sz, binary, &msg)) {
         kputs(msg);
       }
-      
-      binary->next = elf_modules;
-      elf_modules = binary;
+
+      stallion_scheduler_enqueue_binary(&os.scheduler, binary);
     } break;
     }
     // Jump to the next one.

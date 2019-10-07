@@ -18,6 +18,8 @@ typedef struct {
 
 void stallion_enter_ring3(void *entry_point);
 
+void stallion_scheduler_init(stallion_scheduler_t *scheduler);
+
 stallion_process_t *
 stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
                                   stallion_elf_binary_t *binary);

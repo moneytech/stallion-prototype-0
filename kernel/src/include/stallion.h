@@ -1,16 +1,15 @@
 #ifndef STALLION_STALLION_H
 #define STALLION_STALLION_H
 #define _HAVE_SIZE_T
+#include "interrupt.h"
 #include "multiboot2.h"
-#include "process.h"
+#include "stallion_elf.h"
+#include "stallion_process.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "liballoc.h"
-#include "interrupt.h"
-#include "stallion_elf.h"
-#include "stallion_process.h"
 
 #define STALLION_SYSCALL_EXIT 1
 #define STALLION_SYSCALL_READ 2
@@ -21,12 +20,15 @@ typedef struct {
   multiboot_uint64_t ram_start;
 } stallion_boot_info_t;
 
-typedef struct {
+typedef struct _stallion {
   stallion_boot_info_t boot_info;
+  stallion_scheduler_t scheduler;
 } stallion_t;
 
 extern uint32_t startkernel;
 extern uint32_t endkernel;
+
+void stallion_init(stallion_t *os);
 
 void stallion_interrupt_handler(stallion_interrupt_t *ctx);
 void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx);
