@@ -122,6 +122,10 @@ bool stallion_elf_read_binary(void *data, size_t size,
                               stallion_elf_binary_t *binary,
                               const char **error_message);
 
+bool stallion_elf_load_into_memory(stallion_elf_binary_t *binary);
+
+bool stallion_elf_unload_from_memory(stallion_elf_binary_t *binary);
+
 // const char *
 // stallion_get_section_name(stallion_elf_header_t *header,
 //                           stallion_elf_section_header_t *section_header);

@@ -1,8 +1,6 @@
 #include <multiboot2.h>
 #include <stallion.h>
 
-extern uint32_t startkernel;
-
 void stallion_kernel_main(unsigned long magic, void *addr) {
   if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
     kputs("Invalid magic given; not Multiboot2. Aborting.");
@@ -50,6 +48,8 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
     stallion_page_unmap(old_tag);
     stallion_page_map(tag, tag, stallion_page_get_flag_kernel());
   }
+  stallion_page_unmap(tag);
 
-  // TODO: Next, run processes until the end of time, using the scheduler.
+  // Next, run processes until the end of time, using the scheduler.
+  stallion_scheduler_run(&os.scheduler);
 }

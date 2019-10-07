@@ -15,5 +15,15 @@ stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
   if (scheduler->processes != NULL) {
     scheduler->processes->next = p;
   }
+  if (scheduler->current_process == NULL) {
+    scheduler->current_process = p;
+  }
   return p;
+}
+
+void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
+  if (scheduler->current_process != NULL) {
+    // TODO: Move ELF loading logic, and only load modules into memory
+    // when they are about to run.
+  }
 }

@@ -138,37 +138,59 @@ bool stallion_elf_read_binary(void *data, size_t size,
       if (!stallion_elf_read_tables(header, binary, error_message)) {
         return false;
       } else {
-        // Load the program headers.
-        stallion_elf_program_header_t *program_headers =
-            stallion_elf_get_program_header_array(header);
-        for (uint16_t i = 0; i < header->program_header_entry_count; i++) {
-          stallion_elf_program_header_t ph = program_headers[i];
-          if (ph.type == STALLION_ELF_PROGRAM_LOAD) {
-            // Instead of copying data, just directly load the section
-            // into virtual memory.
-            uint32_t flags = stallion_page_get_flag_user();
-            // Only writable sections should be R/W.
-            if (ph.flags == 0x2) {
-              flags |= stallion_page_get_flag_readwrite();
-            }
-            void *vaddr = (void *)ph.virtual_memory_offset;
-            void *faddr = (void *)data + ph.offset_in_file;
-            stallion_page_map_region(faddr, vaddr, ph.size_in_memory, flags);
-
-            // TODO: Handle out-of-memory
-            stallion_elf_executable_region_t *region =
-                kmalloc(sizeof(stallion_elf_executable_region_t));
-            region->header = ph;
-            region->vaddr = vaddr;
-            region->next = binary->executable_regions;
-            binary->executable_regions = region;
-          } else if (ph.type == STALLION_ELF_PROGRAM_DYNAMIC) {
-            // TODO: Dynamic linking...
-            // kputs("DYNAMIC");
-          }
-        }
         return true;
       }
     }
   }
+}
+
+bool stallion_elf_load_into_memory(stallion_elf_binary_t *binary) {
+  // Load the program headers.
+  stallion_elf_program_header_t *program_headers =
+      stallion_elf_get_program_header_array(binary->header);
+  for (uint16_t i = 0; i < binary->header->program_header_entry_count; i++) {
+    stallion_elf_program_header_t ph = program_headers[i];
+    if (ph.type == STALLION_ELF_PROGRAM_LOAD) {
+      // Instead of copying data, just directly load the section
+      // into virtual memory.
+      uint32_t flags = stallion_page_get_flag_user();
+      // Only writable sections should be R/W.
+      if (ph.flags == 0x2) {
+        flags |= stallion_page_get_flag_readwrite();
+      }
+      void *vaddr = (void *)ph.virtual_memory_offset;
+      void *faddr = (void *)binary->header + ph.offset_in_file;
+      // TODO: A simple == 0 check is not enough
+      if (stallion_page_map_region(faddr, vaddr, ph.size_in_memory, flags) ==
+          0) {
+        return false;
+      }
+
+      stallion_elf_executable_region_t *region =
+          kmalloc(sizeof(stallion_elf_executable_region_t));
+      if (region == NULL)
+        return false;
+      region->header = ph;
+      region->vaddr = vaddr;
+      region->next = binary->executable_regions;
+      binary->executable_regions = region;
+    } else if (ph.type == STALLION_ELF_PROGRAM_DYNAMIC) {
+      // TODO: Dynamic linking...
+    }
+  }
+  return true;
+}
+
+bool stallion_elf_unload_from_memory(stallion_elf_binary_t *binary) {
+  // TODO: Robust error handling.
+  // Destroy all executable regions.
+  stallion_elf_executable_region_t *region = binary->executable_regions;
+  while (region != NULL) {
+    stallion_elf_executable_region_t *old = region;
+    stallion_page_unmap_region(region->vaddr, region->header.size_in_memory);
+    region = region->next;
+    kfree(old);
+  }
+  binary->executable_regions = NULL;
+  return true;
 }

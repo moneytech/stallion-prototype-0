@@ -14,6 +14,7 @@ typedef struct _stallion_process {
 typedef struct {
   size_t max_pid;
   stallion_process_t *processes;
+  stallion_process_t *current_process;
 } stallion_scheduler_t;
 
 void stallion_enter_ring3(void *entry_point);

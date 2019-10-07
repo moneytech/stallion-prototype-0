@@ -29,6 +29,7 @@ extern uint32_t startkernel;
 extern uint32_t endkernel;
 
 void stallion_init(stallion_t *os);
+void stallion_scheduler_run(stallion_scheduler_t *scheduler);
 
 void stallion_interrupt_handler(stallion_interrupt_t *ctx);
 void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx);
