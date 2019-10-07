@@ -146,8 +146,11 @@ bool stallion_elf_read_binary(void *data, size_t size,
           if (ph.type == STALLION_ELF_PROGRAM_LOAD) {
             // Instead of copying data, just directly load the section
             // into virtual memory.
-            uint32_t flags = stallion_page_get_flag_kernel() |
-                             stallion_page_get_flag_readwrite();
+            uint32_t flags = stallion_page_get_flag_user();
+            // Only writable sections should be R/W.
+            if (ph.flags == 0x2) {
+              flags |= stallion_page_get_flag_readwrite();
+            }
             void *vaddr = (void *)ph.virtual_memory_offset;
             void *faddr = (void *)data + ph.offset_in_file;
             stallion_page_map_region(faddr, vaddr, ph.size_in_memory, flags);
