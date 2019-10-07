@@ -30,6 +30,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       size_t sz = module->mod_end - module->mod_start;
       uint32_t flags = stallion_page_get_flag_user();
       stallion_page_map_region(p, p, sz, flags);
+      // TODO: Release loaded pages here...
 
       // Load the ELF binary.
       const char *msg;
