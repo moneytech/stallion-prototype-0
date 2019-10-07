@@ -56,10 +56,10 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
   stallion_elf_binary_t *module = elf_modules;
   while (module != NULL) {
     void *entry_point = (void *)module->header->entry_point;
-    kputptr("Module entry", entry_point);
+    kputptr("Entry point", entry_point);
     typedef void (*Unsafe)();
     Unsafe unsafe = entry_point;
-    unsafe();
+    // unsafe();
     // stallion_enter_ring3(entry_point);
     module = module->next;
   }

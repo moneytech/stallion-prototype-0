@@ -65,6 +65,7 @@ bool stallion_page_map(void *phys, void *virt, uint32_t flags) {
     return false;
 
   // Otherwise, set the value, and return true.
+  page_directory[pde_index] |= (flags & 0xfff);
   *pt = ((uint32_t)phys) | (flags & 0xFFF) | 0x01;
   return true;
 }
@@ -124,7 +125,7 @@ int liballoc_lock() { return 0; }
 
 int liballoc_unlock() { return 0; }
 
-void *liballoc_alloc(int page_count) {
+void *liballoc_alloc(int page_count, size_t flags) {
   // TODO: There's opportunity to optimize this, i.e. by using a stack.
 
   // Skip the ID-mapped region.
@@ -156,9 +157,7 @@ void *liballoc_alloc(int page_count) {
     if (avail == page_count) {
       for (int i = 0; i < page_count; i++) {
         void *ptr = base_ptr + (i * PAGE_SIZE);
-        stallion_page_map(ptr, ptr,
-                          stallion_page_get_flag_kernel() |
-                              stallion_page_get_flag_readwrite());
+        stallion_page_map(ptr, ptr, flags);
       }
       return base_ptr;
     } else {

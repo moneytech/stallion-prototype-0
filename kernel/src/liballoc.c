@@ -1,5 +1,11 @@
 #include <stallion.h>
 
+uint32_t stallion_page_get_flag_kernel();
+
+uint32_t stallion_page_get_flag_user();
+
+uint32_t stallion_page_get_flag_readwrite();
+
 /**  Durand's Ridiculously Amazing Super Duper Memory functions.  */
 
 //#define DEBUG
@@ -211,7 +217,7 @@ static inline struct boundary_tag *split_tag(struct boundary_tag *tag) {
 
 // ***************************************************************
 
-static struct boundary_tag *allocate_new_tag(unsigned int size) {
+static struct boundary_tag *allocate_new_tag(unsigned int size, size_t flags) {
   unsigned int pages;
   unsigned int usage;
   struct boundary_tag *tag;
@@ -228,7 +234,7 @@ static struct boundary_tag *allocate_new_tag(unsigned int size) {
   if (pages < l_pageCount)
     pages = l_pageCount;
 
-  tag = (struct boundary_tag *)liballoc_alloc(pages);
+  tag = (struct boundary_tag *)liballoc_alloc(pages, flags);
 
   if (tag == NULL)
     return NULL; // uh oh, we ran out of memory.
@@ -256,6 +262,11 @@ static struct boundary_tag *allocate_new_tag(unsigned int size) {
 }
 
 void *kmalloc(size_t size) {
+  return kmallocf(size, stallion_page_get_flag_kernel() |
+                            stallion_page_get_flag_readwrite());
+}
+
+void *kmallocf(size_t size, size_t flags) {
   int index;
   void *ptr;
   struct boundary_tag *tag = NULL;
@@ -296,7 +307,7 @@ void *kmalloc(size_t size) {
 
   // No page found. Make one.
   if (tag == NULL) {
-    if ((tag = allocate_new_tag(size)) == NULL) {
+    if ((tag = allocate_new_tag(size, flags)) == NULL) {
       liballoc_unlock();
       return NULL;
     }

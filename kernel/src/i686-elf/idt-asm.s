@@ -133,6 +133,7 @@ interrupt_setup:
 	andl $0xFFFFFFF0, %esp # Bitwise operation to align the stack!
 	movl %ebx, (%esp)
 	call stallion_interrupt_handler
+
 	movl %ebx, %esp
 
 	popl %ebp

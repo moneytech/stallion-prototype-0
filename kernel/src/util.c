@@ -14,3 +14,14 @@ void kmemcpy(void *dst, void *src, unsigned long size) {
     d[i] = s[i];
   }
 }
+
+// Dump...
+void kmemdump(void *addr, unsigned long size) {
+  for (uint32_t i = 0; i < size; i++) {
+    char *ptr = addr + i;
+    kwrites("0x");
+    kwritei_r((uint32_t)ptr, 16);
+    kwrites(": 0x");
+    kputi_r(*ptr, 16);
+  }
+}

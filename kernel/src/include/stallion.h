@@ -85,6 +85,8 @@ void kmemset(void *ptr, uint8_t value, size_t size);
 
 void kmemcpy(void *dst, void *src, unsigned long size);
 
+void kmemdump(void *addr, unsigned long size);
+
 /**
  * Finds the length of a string that is KNOWN to be <= 65535 characters long.
  *  Should work in almost every case, honestly.
@@ -110,6 +112,8 @@ bool stallion_page_map(void *phys, void *virt, uint32_t flags);
 
 size_t stallion_page_map_region(void *phys, void *virt, size_t size,
                                 uint32_t flags);
+
+void stallion_page_mark_readonly(void *phys, void *virt, size_t size);
 
 bool stallion_page_unmap(void *virt);
 

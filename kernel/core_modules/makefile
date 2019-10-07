@@ -4,6 +4,8 @@ export CFLAGS+=-I$(shell pwd)/../libc/include \
 
 all: sanity_check.mod
 
+# .PRECIOUS: %.o
+
 %.mod: %.o
 	$(LD) -L$(LIBC_DIR) -o $@ $< -lc
 	# $(LD) -L$(LIBC_DIR) --oformat binary -o $@ $< -lc
