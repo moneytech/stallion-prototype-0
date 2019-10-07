@@ -22,8 +22,20 @@ stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
 }
 
 void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
-  if (scheduler->current_process != NULL) {
-    // TODO: Move ELF loading logic, and only load modules into memory
-    // when they are about to run.
+  // TODO: Robust error handling.
+  stallion_process_t *proc = scheduler->current_process;
+  if (proc != NULL) {
+    // Load the ELF binary into memory.
+    if (!stallion_elf_load_into_memory(proc->binary)) {
+      kputs("Failed to load ELF binary into memory.");
+      return;
+    }
+
+    // Now that we've loaded the process into memory, just
+    // execute it.
+    // TODO: Resume processes using saved instruction pointer.
+    void *entry_point = (void *)proc->binary->header->entry_point;
+    proc->started = true;
+    stallion_enter_ring3(entry_point);
   }
 }
