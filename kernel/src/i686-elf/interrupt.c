@@ -1,5 +1,5 @@
-#include <stallion/stallion.h>
 #include <stallion.h>
+#include <stallion/stallion.h>
 #include <stallion_i686_elf.h>
 // #include <stallion/stallion_api.h>
 
@@ -16,7 +16,7 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     case ISR_GENERAL_PROTECTION_FAULT: {
       // We hit a GPF fault.
       // No big deal, we can handle it.
-      stallion_handle_general_protection_fault(ctx);
+      return stallion_handle_general_protection_fault(ctx);
     } break;
     case ISR_PAGE_FAULT: {
       stallion_handle_page_fault(ctx);
@@ -75,14 +75,20 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   // asm volatile("sti");
 }
 
-void stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
+uint32_t stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
   // If the page requested was not present, then cr2 will
   // specify the faulty address.
   kputs("Encountered general protection fault!");
   kputptr("Errant instruction pointer", (void *)ctx->esp);
   kwrites("Segment selector index: 0x");
   kputi_r(ctx->error_code, 16);
-  hang();
+
+  // We can't make the desired region available to an unprivileged
+  // user, for obvious reasons. So, terminate the process.
+  // TODO: Pass an error to aborted processes?
+  stallion_kill_current_process(&global_os->scheduler);
+  return 2;
+  // hang();
 }
 
 void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
