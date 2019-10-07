@@ -1,5 +1,5 @@
 #include <multiboot2.h>
-#include <stallion_process.h>
+#include <stallion.h>
 
 extern uint32_t startkernel;
 
@@ -39,6 +39,7 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       if (!stallion_elf_read_binary(p, sz, binary, &msg)) {
         kputs(msg);
       }
+      
       binary->next = elf_modules;
       elf_modules = binary;
     } break;

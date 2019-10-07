@@ -1,7 +1,9 @@
 #ifndef STALLION_ELF_H
 #define STALLION_ELF_H
 
-#include "stallion.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define STALLION_ELF_BITNESS_32 1
 #define STALLION_ELF_BITNESS_64 2
