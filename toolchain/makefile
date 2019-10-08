@@ -12,6 +12,7 @@ NEWLIB_DIR=$(BUILD_DIR)/newlib-src
 .PHONY: clean distclean newlib-copy
 
 all: $(NEWLIB)
+	cp -rp "$(BUILD_DIR)/usr" ../initrd
 
 clean:
 	rm -rf $(NEWLIB_DIR)/newlib/libc/sys/configure \

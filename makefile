@@ -7,7 +7,7 @@ export QEMU=qemu-system-i386
 KERNEL=kernel/src/stallion.bin
 ISO=stallion.iso
 
-.PHONY: clean distclean toolchain $(KERNEL)
+.PHONY: clean distclean initrd toolchain $(KERNEL)
 
 all: $(ISO)
 
@@ -24,15 +24,20 @@ clean:
 		-delete
 	rm -rf .isodir
 	$(MAKE) -C kernel clean
+	$(MAKE) -C initrd clean
 	$(MAKE) -C toolchain clean
+
+initrd:
+	$(MAKE) -C initrd
 
 $(KERNEL):
 	$(MAKE) -C kernel
 
-$(ISO): $(KERNEL)
+$(ISO): $(KERNEL) toolchain initrd
 	mkdir -p .isodir/sys
 	# cp core_modules/*.mod .isodir/sys
-	cp -r iso_contents/* .isodir
+	cp -rf iso_contents/* .isodir
+	cp -f initrd/initrd.tar iso_contents/initrd
 	cp $< .isodir/boot/stallion.bin
 	grub-mkrescue -o $@ .isodir
 
