@@ -4,12 +4,20 @@
 
 # void tss_flush(void* entry_point)
 stallion_tss_flush:
+  # Store entry point addr in ebx
+  mov 4(%esp), %ebx
+
+  # Dump...
+  pushl $16
+  pushl %ebx
+  call kputi_r
+
   # First, flush the TSS.
   mov $0x2b, %ax
   ltr %ax
 
   # Next, jump to usermode via IRET.
-  pop %ebx # Store entry point addr in ebx
+
   # IRET:
     # SS
     # ESP
