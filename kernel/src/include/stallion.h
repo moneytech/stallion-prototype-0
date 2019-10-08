@@ -3,6 +3,7 @@
 #define _HAVE_SIZE_T
 #include "blob.h"
 #include "fd.h"
+#include "file.h"
 #include "interrupt.h"
 #include "multiboot2.h"
 #include "stallion_elf.h"
