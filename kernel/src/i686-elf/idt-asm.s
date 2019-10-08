@@ -158,7 +158,10 @@ interrupt_setup:
 	popl %ebx
 	popl %edx
 	popl %ecx
-	popl %eax
+
+	# Instead of popping eax, preserve whatever was returned by
+	# the syscall handler.
+	# popl %eax
 
 	addl $8, %esp
 	iret

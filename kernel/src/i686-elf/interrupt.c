@@ -74,6 +74,8 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
         if (proc->is_privileged) {
           proc->attributes |= ctx->ebx;
         }
+      } else if (ctx->eax == STALLION_SYSCALL_GET_PID) {
+        return proc->id;
       } else {
         kwrites("Unknown syscall code: 0x");
         kputi_r(ctx->eax, 16);

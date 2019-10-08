@@ -5,6 +5,7 @@
 #define STALLION_SYSCALL_EXIT 1
 #define STALLION_SYSCALL_DECLARE_ATTRIBUTES 2
 #define STALLION_SYSCALL_REQUEST_PERMISSIONS 3
+#define STALLION_SYSCALL_GET_PID 4
 // #define STALLION_SYSCALL_READ 2
 // #define STALLION_SYSCALL_WRITE 3
 // #define STALLION_SYSCALL_BLOCK 4
@@ -31,6 +32,7 @@
 STALLION_NORETURN void stallion_syscall_exit(uint32_t exit_code);
 STALLION_NORETURN void stallion_syscall_declare_attributes(uint32_t attributes);
 STALLION_NORETURN void stallion_syscall_request_permissions(uint32_t permissions);
+uint32_t stallion_syscall_get_pid();
 
 #endif
 
