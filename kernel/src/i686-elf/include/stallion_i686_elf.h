@@ -47,7 +47,7 @@ typedef struct {
 } __attribute__((packed)) stallion_tss_entry_t;
 
 extern stallion_tss_entry_t stallion_tss;
-extern void stallion_tss_flush(uint32_t ptr);
+extern void stallion_tss_flush(uint32_t eip, uint32_t stack_pointer);
 
 void stallion_init_gdt(stallion_t *os);
 void stallion_init_idt(stallion_t *os);

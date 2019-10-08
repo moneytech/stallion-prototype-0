@@ -8,6 +8,7 @@ typedef struct _stallion_process {
   struct _stallion_process *prev, *next;
   bool started;
   stallion_elf_binary_t *binary;
+  void* stack;
   stallion_interrupt_t last_state;
 } stallion_process_t;
 
@@ -17,7 +18,7 @@ typedef struct {
   stallion_process_t *current_process;
 } stallion_scheduler_t;
 
-void stallion_enter_ring3(void *entry_point);
+void stallion_enter_ring3(void *entry_point, void* stack_ptr);
 
 void stallion_scheduler_init(stallion_scheduler_t *scheduler);
 

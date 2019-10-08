@@ -3,10 +3,10 @@
 
 stallion_tss_entry_t stallion_tss;
 
-void stallion_enter_ring3(void *entry_point) {
+void stallion_enter_ring3(void *entry_point, void *stack_ptr) {
   // Save ESP, for when we come back from ring3.
   uint32_t esp;
   asm volatile("mov %%esp, %0" : "=a"(esp));
   stallion_tss.esp0 = esp;
-  stallion_tss_flush((uint32_t)entry_point);
+  stallion_tss_flush((uint32_t)entry_point, (uint32_t)stack_ptr);
 }

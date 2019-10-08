@@ -14,6 +14,10 @@ stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
   p->next = NULL;
   p->prev = scheduler->processes;
   p->started = false;
+  // TODO: Find some better way to allocate a stack for processes.
+  p->stack = kmallocf(stallion_page_get_page_size(),
+                      stallion_page_get_flag_user() |
+                          stallion_page_get_flag_readwrite());
   if (scheduler->processes != NULL) {
     scheduler->processes->next = p;
   }
@@ -41,9 +45,7 @@ void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
     // TODO: Resume processes using saved instruction pointer.
     void *entry_point = (void *)proc->binary->header->entry_point;
     proc->started = true;
-    kputptr("True entry point", entry_point);
-    kwrites("ebx=0x");
-    stallion_enter_ring3(entry_point);
+    stallion_enter_ring3(entry_point, proc->stack);
   }
 }
 
@@ -60,6 +62,7 @@ void stallion_kill_current_process(stallion_scheduler_t *scheduler) {
     } else {
       scheduler->current_process = scheduler->processes;
     }
+    kfree(old->stack);
     kfree(old);
   }
 }

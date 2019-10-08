@@ -4,13 +4,10 @@
 
 # void tss_flush(void* entry_point)
 stallion_tss_flush:
+  # Store the provided stack in ecx
+  mov 8(%esp), %ecx
   # Store entry point addr in ebx
   mov 4(%esp), %ebx
-
-  # Dump...
-  pushl $16
-  pushl %ebx
-  call kputi_r
 
   # First, flush the TSS.
   cli
@@ -32,9 +29,10 @@ stallion_tss_flush:
   mov %ax, %fs
   mov %ax, %gs # User data seg
 
-  mov %esp, %eax
+  # mov %esp, %eax
   pushl $0x23 # SS (select the same segment as above)
-  pushl %eax # ESP
+  # pushl %eax # ESP
+  pushl %ecx
   pushf # EFLAGS
 
   pushl $0x1b # CS User code seg
