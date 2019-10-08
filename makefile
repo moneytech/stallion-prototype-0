@@ -5,7 +5,8 @@ export AS=$(TARGET)-as
 export CC=$(TARGET)-gcc
 export LD=$(TARGET)-ld
 export RANLIB=$(TARGET)-ranlib
-export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib
+export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib \
+-DSTALLION_BITS_32
 export DEBUGASFLAGS=-g
 export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
 export QEMU=qemu-system-i386
