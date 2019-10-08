@@ -1,7 +1,6 @@
 #ifndef STALLION_LIBC_STALLION_H
 #define STALLION_LIBC_STALLION_H
 #define STALLION_OS
-#include "../stdint.h"
 
 #define STALLION_SYSCALL_EXIT 1
 #define STALLION_DECLARE_ATTRIBUTES 2
@@ -15,6 +14,10 @@
 #define STALLION_PERMISSION_SERIAL_READ 1
 #define STALLION_PERMISSION_SERIAL_WRITE 2
 
+#ifdef __ASSEMBLY__
+#else
+#include "../stdint.h"
+
 #if __STDC_VERSION__ >= 201112L
 #define STALLION_NORETURN _Noreturn
 #else
@@ -27,6 +30,8 @@
 
 STALLION_NORETURN void stallion_syscall_exit(uint32_t exit_code);
 STALLION_NORETURN void stallion_syscall_declare_attributes(uint32_t attributes);
-STALLION_NORETURN void stallion_syscall_declare_permissions(uint32_t permissions);
+STALLION_NORETURN void stallion_syscall_request_permissions(uint32_t permissions);
+
+#endif
 
 #endif

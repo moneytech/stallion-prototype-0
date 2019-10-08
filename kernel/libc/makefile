@@ -1,3 +1,4 @@
+export ASFLAGS=-I$(shell pwd)/include
 export CFLAGS=-I$(shell pwd)/include
 LIBC_OBJECTS=string.o syscall.o
 
