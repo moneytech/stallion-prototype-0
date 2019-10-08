@@ -9,10 +9,15 @@
 #include <sys/times.h>
 #include <sys/types.h>
 
-void _exit();
-int close(int file);
 char **environ; /* pointer to array of char * strings that define the current
                    environment variables */
+
+void _exit() {
+  // TODO: How to get exit code from newlib?
+  stallion_syscall_exit(0);
+}
+
+int close(int file);
 int execve(char *name, char **argv, char **env);
 int fork();
 int fstat(int file, struct stat *st);
