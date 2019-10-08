@@ -1,15 +1,18 @@
-/* note these headers are all provided by newlib - you don't need to provide them */
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/fcntl.h>
-#include <sys/times.h>
-#include <sys/errno.h>
-#include <sys/time.h>
+/* note these headers are all provided by newlib - you don't need to provide
+ * them */
+#include <stallion/stallion.h>
 #include <stdio.h>
- 
+#include <sys/errno.h>
+#include <sys/fcntl.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <sys/types.h>
+
 void _exit();
 int close(int file);
-char **environ; /* pointer to array of char * strings that define the current environment variables */
+char **environ; /* pointer to array of char * strings that define the current
+                   environment variables */
 int execve(char *name, char **argv, char **env);
 int fork();
 int fstat(int file, struct stat *st);
@@ -26,4 +29,5 @@ clock_t times(struct tms *buf);
 int unlink(char *name);
 int wait(int *status);
 int write(int file, char *ptr, int len);
-// int gettimeofday(struct timeval *__restrict p, struct timezone *__restrict z);
+// int gettimeofday(struct timeval *__restrict p, struct timezone *__restrict
+// z);

@@ -9,7 +9,7 @@ BUILD_BIN=$(BUILD_DIR)/bin
 NEWLIB=$(BUILD_DIR)/usr/$(ARCH)-stallion/lib/libc.a
 NEWLIB_DIR=$(BUILD_DIR)/newlib-src
 
-.PHONY: clean distclean
+.PHONY: clean distclean newlib-copy
 
 all: $(NEWLIB)
 
@@ -18,7 +18,6 @@ clean:
 	$(NEWLIB_DIR)/newlib/libc/sys/stallion/autom4te.cache \
 	build/newlib/Makefile
 	find . -name 'autom4te.cache' -delete
-	make -i -C build/newlib/$(ARCH)-stallion/newlib distclean
 
 distclean: clean
 	rm -rf build
@@ -47,11 +46,11 @@ $(NEWLIB_DIR)/newlib/libc/sys/configure: $(AUTOCONF) \
 	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
 
 $(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile: $(AUTOCONF) \
-	$(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile.am
+	newlib-copy
 	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
 	cd $(NEWLIB_DIR)/newlib/libc/sys/stallion && $(AUTORECONF)
 
-$(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile.am: $(wildcard newlib-copy/*)
+newlib-copy:
 	cp -rpfv newlib-copy/ $(NEWLIB_DIR)
 
 $(AUTOCONF):
