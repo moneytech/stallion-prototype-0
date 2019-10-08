@@ -9,19 +9,11 @@ export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib \
 export PATH:="$(shell pwd)/build/bin:$(PATH)"
 KERNEL=src/stallion.bin
 
-.PHONY: $(KERNEL) $(LIBC_TARGETS) clean distclean
+.PHONY: $(KERNEL) clean distclean
 
-all: stallion.iso
+all: $(KERNEL)
 
 clean:
-	rm -rf .isodir
 
 $(KERNEL):
 	$(MAKE) -C src
-
-stallion.iso: $(KERNEL) $(LIBC_TARGETS)
-	mkdir -p .isodir/sys
-	# cp core_modules/*.mod .isodir/sys
-	cp -r iso_contents/* .isodir
-	cp $< .isodir/boot/stallion.bin
-	grub-mkrescue -o $@ .isodir
