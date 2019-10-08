@@ -10,10 +10,10 @@ mkdir -p "$BUILD_DIR"
 
 # Download the correct versions of auto{make,conf}
 if [ ! -f "$AUTOMAKE_TAR" ]; then
-  wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.12.1.tar.gz"
+  wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.12.tar.gz"
 fi
 if [ ! -f "$AUTOCONF_TAR" ]; then
-  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz"
+  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz"
 fi
 
 # Extract them...

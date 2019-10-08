@@ -1,5 +1,6 @@
 export CFLAGS+=-I$(shell pwd)/include -I$(shell pwd)/libc/include
 export PATH:="$(shell pwd)/build/bin:$(PATH)"
+ACLOCAL=$(shell pwd)/build/bin/aclocal
 AUTOCONF=$(shell pwd)/build/bin/autoconf
 AUTOMAKE=$(shell pwd)/build/bin/automake
 AUTORECONF=$(shell pwd)/build/bin/autoreconf
@@ -30,6 +31,7 @@ $(NEWLIB): build/newlib/makefile
 	# $(MAKE) -C build/newlib all
 
 build/newlib/makefile: autotools \
+	aclocal_m4 \
 	$(NEWLIB_DIR)/newlib/libc/sys/configure \
 	$(NEWLIB_DIR)/newlib/libc/sys/stallion/makefile
 	ln -sf `which $(AR)` "$(BUILD_BIN)/$(ARCH)-stallion-ar"
@@ -40,6 +42,10 @@ build/newlib/makefile: autotools \
 	mkdir -p build/newlib
 	cd build/newlib && ../../$(NEWLIB_DIR)/configure --prefix=/usr \
 	--target=$(ARCH)-stallion
+
+aclocal_m4:
+	cd $(NEWLIB_DIR) && $(ACLOCAL) -I ../../..
+	cd $(NEWLIB_DIR) && $(AUTOMAKE) --cygnus Makefile
 
 $(NEWLIB_DIR)/newlib/libc/sys/configure: $(AUTOCONF) \
 	$(NEWLIB_DIR)/config.sub \
