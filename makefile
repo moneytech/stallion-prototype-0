@@ -12,13 +12,16 @@ export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
 export QEMU=qemu-system-i386
 KERNEL=kernel/stallion.iso
 
-.PHONY: clean $(KERNEL)
+.PHONY: clean distclean $(KERNEL)
 
 all: $(KERNEL)
 
 debug: ASFLAGS+=$(DEBUGASFLAGS)
 debug: CFLAGS+=$(DEBUGCFLAGS)
 debug: all
+
+distclean: clean
+	$(MAKE) -C kernel distclean
 
 clean:
 	find . \( -name '*.o' -o -name '*.a' \
