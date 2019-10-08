@@ -3,7 +3,7 @@ INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS) \
 -I$(shell pwd)/include
 AM_CCASFLAGS = $(INCLUDES)
 
-ASFLAGS+=-I$(shell pwd)/include
+ASFLAGS=-I$(shell pwd)/include
  
 noinst_LIBRARIES = lib.a
  

@@ -23,6 +23,7 @@ distclean: clean
 	rm -rf build
 
 $(NEWLIB): build/newlib/Makefile
+	mkdir -p $(BUILD_DIR)/usr/$(ARCH)-stallion/include/stallion
 	$(MAKE) -C build/newlib all
 	$(MAKE) -C build/newlib install DESTDIR="$(BUILD_DIR)"
 

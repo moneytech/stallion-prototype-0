@@ -20,7 +20,7 @@
 
 #ifdef __ASSEMBLY__
 #else
-#include "../stdint.h"
+#include <stdint.h>
 
 #if __STDC_VERSION__ >= 201112L
 #define STALLION_NORETURN _Noreturn
