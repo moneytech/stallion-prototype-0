@@ -16,8 +16,7 @@ if [ ! -f "$AUTOMAKE_TAR" ]; then
   # wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.13.4.tar.gz"
 fi
 if [ ! -f "$AUTOCONF_TAR" ]; then
-  # wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz"
-  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz"
+  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz"
 fi
 if [ ! -f "$NEWLIB_TAR" ]; then
   # wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz"
