@@ -1,10 +1,13 @@
 export CFLAGS+=-I$(shell pwd)/include -I$(shell pwd)/libc/include
+AUTOCONF=$(shell pwd)/build/bin/autoconf
+AUTOMAKE=$(shell pwd)/build/bin/automake
 KERNEL=src/stallion.bin
 LIBC_TARGETS=libc/libc.a src/libm.a
 
-.PHONY: $(KERNEL) $(LIBC_TARGETS) clean core_modules distclean libc
+.PHONY: $(KERNEL) $(LIBC_TARGETS) clean core_modules distclean libc \
+	autotools
 
-all: stallion.iso
+all: stallion.iso autotools
 
 clean:
 	rm -rf .isodir
@@ -14,6 +17,14 @@ distclean: clean
 
 $(KERNEL):
 	$(MAKE) -C src
+
+autotools: $(AUTOCONF) $(AUTOMAKE)
+
+$(AUTOCONF):
+	$(MAKE) -C build/autoconf-src install
+
+$(AUTOMAKE):
+	$(MAKE) -C build/automake-src install
 
 libc: $(LIBC_TARGETS)
 
