@@ -1,6 +1,8 @@
 #ifndef STALLION_STALLION_H
 #define STALLION_STALLION_H
 #define _HAVE_SIZE_T
+#include "blob.h"
+#include "fd.h"
 #include "interrupt.h"
 #include "multiboot2.h"
 #include "stallion_elf.h"

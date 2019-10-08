@@ -8,6 +8,7 @@ all: stallion.bin
 $(LIBARCH):
 	$(MAKE) -C $(TARGET)
 
-stallion.bin: scheduler.o elf.o kernel.o init.o liballoc.o util.o $(LIBARCH)
+stallion.bin: blob.o elf.o kernel.o init.o liballoc.o \
+	scheduler.o util.o $(LIBARCH)
 	$(CC) $(CFLAGS) -T linker.ld -o $@ $^
 	grub-file --is-x86-multiboot2 $@
