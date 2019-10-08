@@ -13,6 +13,10 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   outb(0x20, 0x20);
   if (ctx->number < 32) {
     switch (ctx->number) {
+    case 0x3: {
+      kputs("BREAK!!!");
+      hang();
+    } break;
     case ISR_GENERAL_PROTECTION_FAULT: {
       // We hit a GPF fault.
       // No big deal, we can handle it.

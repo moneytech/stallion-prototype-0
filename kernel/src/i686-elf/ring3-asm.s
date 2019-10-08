@@ -13,6 +13,7 @@ stallion_tss_flush:
   call kputi_r
 
   # First, flush the TSS.
+  # cli
   mov $0x2b, %ax
   ltr %ax
 
@@ -38,5 +39,6 @@ stallion_tss_flush:
 
   pushl $0x1b # CS User code seg
   push %ebx # ebx has entry_point, the jump address
+  int $0x3
   iret
 .size stallion_tss_flush, . - stallion_tss_flush

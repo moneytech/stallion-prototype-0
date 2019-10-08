@@ -50,22 +50,25 @@ void stallion_init_gdt(stallion_t *os) {
   gdt_describe(4, 0, LIMIT_4GB, 0xf2, 0xcf);
 
   // Map the TSS
+  // access=11101001=0xe9
   uint32_t tss_base = (uint32_t)&stallion_tss;
   gdt_describe(5, tss_base, tss_base + sizeof(stallion_tss), 0xe9, 0);
 
   // TSS Setup.
-  stallion_tss.ss0 = 0x10;
+  uint32_t code_sel = 0x10;
+  uint32_t data_sel = 0x08;
+  stallion_tss.ss0 = code_sel;
   stallion_tss.esp0 = 0;
-  stallion_tss.cs = 0x0b;
-  stallion_tss.ss = 0x13;
-  stallion_tss.es = 0x13;
-  stallion_tss.ds = 0x13;
-  stallion_tss.fs = 0x13;
-  stallion_tss.gs = 0x13;
+  stallion_tss.cs = data_sel;
+  stallion_tss.ss = code_sel;
+  stallion_tss.es = code_sel;
+  stallion_tss.ds = code_sel;
+  stallion_tss.fs = code_sel;
+  stallion_tss.gs = code_sel;
 
   // Describe the actual GDT.
   gdt_descriptor.offset = (uint32_t)&gdt;
-  gdt_descriptor.size = (sizeof(gdt_entry_t) * 5) - 1;
+  gdt_descriptor.size = (sizeof(gdt)) - 1;
   // gdt_descriptor.size = sizeof(gdt) - 1;
 
   // Load it!
