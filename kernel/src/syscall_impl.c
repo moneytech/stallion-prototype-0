@@ -4,11 +4,8 @@
 int32_t stallion_handle_syscall(stallion_interrupt_t *ctx, stallion_t *os) {
   stallion_process_t *proc = os->scheduler.current_process;
   if (proc != NULL) {
-    // kputs("GOT A SYSCALL!!!!");
     if (ctx->eax == STALLION_SYSCALL_EXIT) {
-      // Kill the process.
-      // kwrites("Exiting. Code=");
-      // kputi(ctx->ebx);
+      // TODO: Pass exit code
       stallion_kill_current_process(&global_os->scheduler);
       return -1;
     } else if (ctx->eax == STALLION_SYSCALL_DECLARE_ATTRIBUTES) {
