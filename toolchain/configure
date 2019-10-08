@@ -12,35 +12,37 @@ mkdir -p "$BUILD_DIR"
 
 # Download the correct versions of auto{make,conf}
 if [ ! -f "$AUTOMAKE_TAR" ]; then
-  wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.12.tar.gz"
+  wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.11.tar.gz"
+  # wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.13.4.tar.gz"
 fi
 if [ ! -f "$AUTOCONF_TAR" ]; then
-  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.65.tar.gz"
+  # wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz"
+  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz"
 fi
 if [ ! -f "$NEWLIB_TAR" ]; then
-  wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz"
+  # wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz"
+  wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz"
+  # wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
 fi
 
 # Extract them...
 if [ ! -d "$AUTOMAKE_DIR" ]; then
   mkdir -p "$AUTOMAKE_DIR"
   tar -zxvf "$AUTOMAKE_TAR" -C "$AUTOMAKE_DIR" --strip-components=1
+  (
+    cd "$AUTOMAKE_DIR"
+    ./configure --prefix="$BUILD_DIR"
+  )
 fi
 if [ ! -d "$AUTOCONF_DIR" ]; then
   mkdir -p "$AUTOCONF_DIR"
   tar -zxvf "$AUTOCONF_TAR" -C "$AUTOCONF_DIR" --strip-components=1
+  (
+    cd "$AUTOCONF_DIR"
+    ./configure --prefix="$BUILD_DIR"
+  )
 fi
 if [ ! -d "$NEWLIB_DIR" ]; then
   mkdir -p "$NEWLIB_DIR"
   tar -zxvf "$NEWLIB_TAR" -C "$NEWLIB_DIR" --strip-components=1
 fi
-
-# Next, configure them.
-(
-  cd "$AUTOMAKE_DIR"
-  ./configure --prefix="$BUILD_DIR"
-)
-(
-  cd "$AUTOCONF_DIR"
-  ./configure --prefix="$BUILD_DIR"
-)

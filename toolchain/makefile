@@ -1,3 +1,4 @@
+export CFLAGS+=-D_COMPILING_NEWLIB
 export PATH:="$(shell pwd)/build/bin:$(PATH)"
 ACLOCAL=$(shell pwd)/build/bin/aclocal
 AUTOCONF=$(shell pwd)/build/bin/autoconf
@@ -5,28 +6,28 @@ AUTOMAKE=$(shell pwd)/build/bin/automake
 AUTORECONF=$(shell pwd)/build/bin/autoreconf
 BUILD_DIR=$(shell pwd)/build
 BUILD_BIN=$(BUILD_DIR)/bin
-NEWLIB=newlib
+NEWLIB=$(BUILD_DIR)/usr/$(ARCH)-stallion/lib/libc.a
 NEWLIB_DIR=$(BUILD_DIR)/newlib-src
 
 .PHONY: clean distclean
 
-all: build/newlib/Makefile #$(NEWLIB)
+all: $(NEWLIB)
 
 clean:
 	rm -rf $(NEWLIB_DIR)/newlib/libc/sys/configure \
-	$(NEWLIB_DIR)/newlib/libc/sys/stallion/autom4te.cache
+	$(NEWLIB_DIR)/newlib/libc/sys/stallion/autom4te.cache \
+	build/newlib/Makefile
 	find . -name 'autom4te.cache' -delete
+	make -i -C build/newlib/$(ARCH)-stallion/newlib distclean
 
 distclean: clean
 	rm -rf build
 
-$(NEWLIB): build/newlib/makefile
-	# $(MAKE) -C build/newlib all
+$(NEWLIB): build/newlib/Makefile
+	$(MAKE) -C build/newlib all
+	$(MAKE) -C build/newlib install DESTDIR="$(BUILD_DIR)"
 
 autotools: $(AUTOCONF) $(AUTOMAKE)
-
-newlib-copy: # $(wildcard newlib-copy/*)
-	cp -rpfv newlib-copy/ $(NEWLIB_DIR)
 
 build/newlib/Makefile: autotools \
 	$(NEWLIB_DIR)/newlib/libc/sys/configure \
@@ -46,9 +47,12 @@ $(NEWLIB_DIR)/newlib/libc/sys/configure: $(AUTOCONF) \
 	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
 
 $(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile: $(AUTOCONF) \
-	newlib-copy
+	$(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile.am
 	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
 	cd $(NEWLIB_DIR)/newlib/libc/sys/stallion && $(AUTORECONF)
+
+$(NEWLIB_DIR)/newlib/libc/sys/stallion/Makefile.am: $(wildcard newlib-copy/*)
+	cp -rpfv newlib-copy/ $(NEWLIB_DIR)
 
 $(AUTOCONF):
 	$(MAKE) -i -C build/autoconf-src install
