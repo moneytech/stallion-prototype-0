@@ -10,10 +10,10 @@ NEWLIB_DIR=$(BUILD_DIR)/newlib-src
 
 .PHONY: clean distclean autotools newlib-copy $(NEWLIB)
 
-all: stallion.iso autotools $(NEWLIB)
+all: $(NEWLIB)
 
 clean:
-	rm -rf (NEWLIB_DIR)/newlib/libc/sys/configure \
+	rm -rf $(NEWLIB_DIR)/newlib/libc/sys/configure \
 	$(NEWLIB_DIR)/newlib/libc/sys/stallion/autom4te.cache
 	find . -name 'autom4te.cache' -delete
 
@@ -52,7 +52,7 @@ $(NEWLIB_DIR)/newlib/libc/sys/stallion/makefile: $(AUTOCONF) \
 	cd $(NEWLIB_DIR)/newlib/libc/sys/stallion && $(AUTORECONF)
 
 $(AUTOCONF):
-	$(MAKE) -C build/autoconf-src install
+	$(MAKE) -i -C build/autoconf-src install
 
 $(AUTOMAKE):
-	$(MAKE) -C build/automake-src install
+	$(MAKE) -i -C build/automake-src install
