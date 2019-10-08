@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+BUILD_DIR="`pwd`/build"
+AUTOMAKE_TAR="$BUILD_DIR/automake.tar.gz"
+AUTOCONF_TAR="$BUILD_DIR/autoconf.tar.gz"
+AUTOMAKE_DIR="$BUILD_DIR/automake-src"
+AUTOCONF_DIR="$BUILD_DIR/autoconf-src"
+
+# Create the build dir
+mkdir -p "$BUILD_DIR"
+
+# Download the correct versions of auto{make,conf}
+if [ ! -f "$AUTOMAKE_TAR" ]; then
+  wget -O "$AUTOMAKE_TAR" "https://ftp.gnu.org/gnu/automake/automake-1.12.tar.gz"
+fi
+if [ ! -f "$AUTOCONF_TAR" ]; then
+  wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.65.tar.gz"
+fi
+
+# Extract them...
+if [ ! -d "$AUTOMAKE_DIR" ]; then
+  mkdir -p "$AUTOMAKE_DIR"
+  tar -zxvf "$AUTOMAKE_TAR" -C "$AUTOMAKE_DIR" --strip-components=1
+fi
+if [ ! -d "$AUTOCONF_DIR" ]; then
+  mkdir -p "$AUTOCONF_DIR"
+  tar -zxvf "$AUTOCONF_TAR" -C "$AUTOCONF_DIR" --strip-components=1
+fi
+
+# Next, configure them.
+(
+  cd "$AUTOMAKE_DIR"
+  ./configure --prefix="$BUILD_DIR"
+)
+(
+  cd "$AUTOCONF_DIR"
+  ./configure --prefix="$BUILD_DIR"
+)
