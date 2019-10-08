@@ -26,6 +26,7 @@ stallion_process_t *
 stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
                                   stallion_elf_binary_t *binary);
 
+void stallion_scheduler_yield(stallion_scheduler_t *scheduler);
 void stallion_kill_current_process(stallion_scheduler_t *scheduler);
 
 #endif

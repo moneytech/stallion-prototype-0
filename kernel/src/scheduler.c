@@ -49,21 +49,27 @@ void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
   }
 }
 
-void stallion_kill_current_process(stallion_scheduler_t *scheduler) {
+void stallion_scheduler_yield(stallion_scheduler_t *scheduler) {
   stallion_process_t *proc = scheduler->current_process;
   if (proc != NULL) {
-    stallion_process_t *old = proc;
     stallion_elf_unload_from_memory(proc->binary);
-    if (scheduler->processes == old) {
-      scheduler->processes = old->next;
+    if (scheduler->processes == proc) {
+      scheduler->processes = proc->next;
     }
-    if (old->next != NULL) {
-      scheduler->current_process = old->next;
+    if (proc->next != NULL) {
+      scheduler->current_process = proc->next;
     } else {
       scheduler->current_process = scheduler->processes;
     }
-    kfree(old->stack);
-    kfree(old);
+  }
+}
+
+void stallion_kill_current_process(stallion_scheduler_t *scheduler) {
+  stallion_process_t *proc = scheduler->current_process;
+  if (proc != NULL) {
+    stallion_scheduler_yield(scheduler);
+    kfree(proc->stack);
+    kfree(proc);
   }
 }
 
