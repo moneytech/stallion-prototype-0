@@ -61,15 +61,23 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     if (irq_no >= 8)
       outb(0xa0, 0x20);
   } else if (ctx->number == 128) {
-    // kputs("GOT A SYSCALL!!!!");
-    if (ctx->eax == STALLION_SYSCALL_EXIT) {
-      // Kill the process.
-      // kputs("Exiting.");
-      stallion_kill_current_process(&global_os->scheduler);
-      return 1;
-    } else {
-      kwrites("Unknown syscall code: 0x");
-      kputi_r(ctx->eax, 16);
+    stallion_process_t *proc = global_os->scheduler.current_process;
+    if (proc != NULL) {
+      // kputs("GOT A SYSCALL!!!!");
+      if (ctx->eax == STALLION_SYSCALL_EXIT) {
+        // Kill the process.
+        // kputs("Exiting.");
+        kputi(ctx->ebx);
+        stallion_kill_current_process(&global_os->scheduler);
+        return 1;
+      } else if (ctx->eax == STALLION_SYSCALL_DECLARE_ATTRIBUTES) {
+        if (proc->is_privileged) {
+          proc->attributes |= ctx->ebx;
+        }
+      } else {
+        kwrites("Unknown syscall code: 0x");
+        kputi_r(ctx->eax, 16);
+      }
     }
   } else {
     kwrites("Got unsupported interrupt: 0x");

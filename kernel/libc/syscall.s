@@ -2,6 +2,8 @@
 #include "stallion/stallion.h"
 
 .global stallion_syscall_exit
+.global stallion_syscall_declare_attributes
+.global stallion_syscall_request_permissions
 
 .section .text
 

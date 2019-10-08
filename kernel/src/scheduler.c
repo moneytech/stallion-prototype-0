@@ -9,6 +9,7 @@ stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
   if (p == NULL)
     return p;
 
+  p->attributes = 0;
   p->binary = binary;
   p->id = scheduler->max_pid++;
   p->next = NULL;

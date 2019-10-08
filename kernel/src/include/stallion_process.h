@@ -5,6 +5,7 @@
 
 typedef struct _stallion_process {
   size_t id;
+  uint32_t attributes;
   struct _stallion_process *prev, *next;
   bool is_privileged, started;
   stallion_elf_binary_t *binary;
