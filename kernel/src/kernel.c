@@ -41,7 +41,11 @@ void stallion_kernel_main(unsigned long magic, void *addr) {
       }
 
       // TODO: Handle errors
-      stallion_scheduler_enqueue_binary(&os.scheduler, binary);
+      stallion_process_t *proc =
+          stallion_scheduler_enqueue_binary(&os.scheduler, binary);
+      if (proc != NULL) {
+        proc->is_privileged = true;
+      }
     } break;
     }
     // Jump to the next one.

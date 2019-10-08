@@ -13,6 +13,7 @@ stallion_scheduler_enqueue_binary(stallion_scheduler_t *scheduler,
   p->id = scheduler->max_pid++;
   p->next = NULL;
   p->prev = scheduler->processes;
+  p->is_privileged = false;
   p->started = false;
   // TODO: Find some better way to allocate a stack for processes.
   p->stack = kmallocf(stallion_page_get_page_size(),
