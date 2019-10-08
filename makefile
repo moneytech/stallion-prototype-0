@@ -22,6 +22,7 @@ clean:
 		-o -name '*.bin' -o -name '*.iso' -o -name '*.mod' \) \
 		-delete
 	$(MAKE) -C kernel clean
+	$(MAKE) -C toolchain clean
 
 $(KERNEL):
 	$(MAKE) -C kernel
