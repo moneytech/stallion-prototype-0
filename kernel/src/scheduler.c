@@ -31,7 +31,7 @@ void stallion_scheduler_run(stallion_scheduler_t *scheduler) {
   // TODO: Robust error handling.
   stallion_process_t *proc = scheduler->current_process;
   if (proc == NULL) {
-    kputs("Kernel done");
+    // kputs("Kernel done");
     hang();
   } else {
     // Load the ELF binary into memory.

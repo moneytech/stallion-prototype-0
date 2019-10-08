@@ -61,10 +61,10 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     if (irq_no >= 8)
       outb(0xa0, 0x20);
   } else if (ctx->number == 128) {
-    kputs("GOT A SYSCALL!!!!");
+    // kputs("GOT A SYSCALL!!!!");
     if (ctx->eax == STALLION_SYSCALL_EXIT) {
       // Kill the process.
-      kputs("Exiting.");
+      // kputs("Exiting.");
       stallion_kill_current_process(&global_os->scheduler);
       return 1;
     } else {
@@ -100,15 +100,15 @@ void stallion_handle_page_fault(stallion_interrupt_t *ctx) {
   uint8_t info = ctx->error_code;
   void *ptr = stallion_get_page_fault_pointer();
   uint32_t page_index = ((uint32_t)ptr) / stallion_page_get_page_size();
-  kputptr("Page fault on pointer", ptr);
-  kwrites("Page index: 0x");
-  kputi_r(page_index, 16);
+  // kputptr("Page fault on pointer", ptr);
+  // kwrites("Page index: 0x");
+  // kputi_r(page_index, 16);
   if (info == 0x0) {
     // TODO: Determine when to map as user page.
-    kputs("Attempt to read non-present page.");
-    kputs("Resolving by mapping page.");
+    // TODO: When to release such a page?
+    // kputs("Attempt to read non-present page.");
+    // kputs("Resolving by mapping page.");
     stallion_page_map(ptr, ptr, 0);
-    hang();
     return;
   } else if (info == 0x2) {
     kputs("Attempt to write to non-present page.");
