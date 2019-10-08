@@ -7,7 +7,7 @@
 #define ISR_GENERAL_PROTECTION_FAULT 0xd
 #define ISR_PAGE_FAULT 0xe
 
-uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
+int32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   // asm volatile("cli");
   // Acknowledge the PIC; send EOI
   outb(0x20, 0x20);
@@ -66,10 +66,10 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
       // kputs("GOT A SYSCALL!!!!");
       if (ctx->eax == STALLION_SYSCALL_EXIT) {
         // Kill the process.
-        // kputs("Exiting.");
+        kwrites("Exiting. Code=");
         kputi(ctx->ebx);
         stallion_kill_current_process(&global_os->scheduler);
-        return 1;
+        return -1;
       } else if (ctx->eax == STALLION_SYSCALL_DECLARE_ATTRIBUTES) {
         if (proc->is_privileged) {
           proc->attributes |= ctx->ebx;
@@ -90,7 +90,7 @@ uint32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
   // asm volatile("sti");
 }
 
-uint32_t stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
+int32_t stallion_handle_general_protection_fault(stallion_interrupt_t *ctx) {
   // If the page requested was not present, then cr2 will
   // specify the faulty address.
   kputs("Encountered general protection fault!");

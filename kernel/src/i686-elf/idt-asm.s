@@ -134,9 +134,9 @@ interrupt_setup:
 	movl %ebx, (%esp)
 	call stallion_interrupt_handler
 
-	# If we didn't return 0, then don't return to user space.
-	cmp $0x0, %eax
-	jne stallion_return_from_ring3
+	# If we returned -1, then don't return to user space.
+	cmp $-1, %eax
+	je stallion_return_from_ring3
 
 	movl %ebx, %esp
 
@@ -160,8 +160,9 @@ interrupt_setup:
 	popl %ecx
 
 	# Instead of popping eax, preserve whatever was returned by
-	# the syscall handler.
+	# the syscall handler. However, we must add to ESP.
 	# popl %eax
+	addl $4, %esp
 
 	addl $8, %esp
 	iret

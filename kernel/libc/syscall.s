@@ -30,5 +30,4 @@ stallion_syscall_get_pid:
   mov 4(%esp), %ebx
   mov $STALLION_SYSCALL_GET_PID, %eax
   int $0x80
-  popl %eax
   ret
