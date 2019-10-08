@@ -1,18 +1,12 @@
 export ARCH=i686
 export TARGET=$(ARCH)-elf
-export AR=$(TARGET)-ar
-export AS=$(TARGET)-as
-export CC=$(TARGET)-gcc
-export LD=$(TARGET)-ld
-export RANLIB=$(TARGET)-ranlib
-export CFLAGS+=-std=gnu99 -ffreestanding -fno-builtin -nostdlib \
--DSTALLION_BITS_32
+export CFLAGS+=-DSTALLION_BITS_32
 export DEBUGASFLAGS=-g
 export DEBUGCFLAGS=-gdwarf-2 -g3 -DSTALLION_DEBUG=1
 export QEMU=qemu-system-i386
 KERNEL=kernel/stallion.iso
 
-.PHONY: clean distclean $(KERNEL)
+.PHONY: clean distclean toolchain $(KERNEL)
 
 all: $(KERNEL)
 
@@ -21,7 +15,7 @@ debug: CFLAGS+=$(DEBUGCFLAGS)
 debug: all
 
 distclean: clean
-	$(MAKE) -C kernel distclean
+	$(MAKE) -C toolchain distclean
 
 clean:
 	find . \( -name '*.o' -o -name '*.a' \
@@ -33,6 +27,9 @@ $(KERNEL):
 	$(MAKE) -C kernel
 
 kernel: $(KERNEL)
+
+toolchain:
+	$(MAKE) -C toolchain
 
 bochs: debug debug.rc
 	bochs -q -rc debug.rc

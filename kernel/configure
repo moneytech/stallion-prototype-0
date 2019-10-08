@@ -2,6 +2,7 @@
 BUILD_DIR="`pwd`/build"
 AUTOMAKE_TAR="$BUILD_DIR/automake.tar.gz"
 AUTOCONF_TAR="$BUILD_DIR/autoconf.tar.gz"
+NEWLIB_TAR="$BUILD_DIR/newlib.tar.gz"
 AUTOMAKE_DIR="$BUILD_DIR/automake-src"
 AUTOCONF_DIR="$BUILD_DIR/autoconf-src"
 NEWLIB_DIR="$BUILD_DIR/newlib-src"
@@ -16,6 +17,9 @@ fi
 if [ ! -f "$AUTOCONF_TAR" ]; then
   wget -O "$AUTOCONF_TAR" "https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz"
 fi
+if [ ! -f "$NEWLIB_TAR" ]; then
+  wget -O "$NEWLIB_TAR" "ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
+fi
 
 # Extract them...
 if [ ! -d "$AUTOMAKE_DIR" ]; then
@@ -27,7 +31,8 @@ if [ ! -d "$AUTOCONF_DIR" ]; then
   tar -zxvf "$AUTOCONF_TAR" -C "$AUTOCONF_DIR" --strip-components=1
 fi
 if [ ! -d "$NEWLIB_DIR" ]; then
-  git clone --depth 1 git://sourceware.org/git/newlib-cygwin.git "$NEWLIB_DIR"
+  mkdir -p "$NEWLIB_DIR"
+  tar -zxvf "$NEWLIB_TAR" -C $"NEWLIB_DIR" --strip-components=1
 fi
 
 # Next, configure them.
