@@ -43,23 +43,6 @@ build/newlib/makefile: autotools \
 	cd build/newlib && ../../$(NEWLIB_DIR)/configure --prefix=/usr \
 	--target=$(ARCH)-stallion
 
-aclocal_m4:
-	cd $(NEWLIB_DIR) && $(ACLOCAL) -I ../../..
-	cd $(NEWLIB_DIR) && $(AUTOMAKE) --cygnus Makefile
-
-$(NEWLIB_DIR)/newlib/libc/sys/configure: $(AUTOCONF) \
-	$(NEWLIB_DIR)/config.sub \
-	$(NEWLIB_DIR)/newlib/configure.host
-	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
-
-$(NEWLIB_DIR)/newlib/libc/sys/stallion/makefile: $(AUTOCONF) \
-	$(AUTORECONF) \
-	$(NEWLIB_DIR)/newlib/libc/sys/stallion/crt0.c \
-	$(NEWLIB_DIR)/newlib/libc/sys/stallion/syscalls.c \
-	$(NEWLIB_DIR)/newlib/libc/sys/stallion/configure.in
-	cd $(NEWLIB_DIR)/newlib/libc/sys && $(AUTOCONF)
-	cd $(NEWLIB_DIR)/newlib/libc/sys/stallion && $(AUTORECONF)
-
 autotools: $(AUTOCONF) $(AUTOMAKE)
 
 $(AUTOCONF):

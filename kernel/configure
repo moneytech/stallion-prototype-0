@@ -4,6 +4,7 @@ AUTOMAKE_TAR="$BUILD_DIR/automake.tar.gz"
 AUTOCONF_TAR="$BUILD_DIR/autoconf.tar.gz"
 AUTOMAKE_DIR="$BUILD_DIR/automake-src"
 AUTOCONF_DIR="$BUILD_DIR/autoconf-src"
+NEWLIB_DIR="$BUILD_DIR/newlib-src"
 
 # Create the build dir
 mkdir -p "$BUILD_DIR"
@@ -24,6 +25,9 @@ fi
 if [ ! -d "$AUTOCONF_DIR" ]; then
   mkdir -p "$AUTOCONF_DIR"
   tar -zxvf "$AUTOCONF_TAR" -C "$AUTOCONF_DIR" --strip-components=1
+fi
+if [ ! -d "$NEWLIB_DIR" ]; then
+  git clone --depth 1 git://sourceware.org/git/newlib-cygwin.git "$NEWLIB_DIR"
 fi
 
 # Next, configure them.
