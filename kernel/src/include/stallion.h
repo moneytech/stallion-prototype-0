@@ -33,6 +33,7 @@ void stallion_return_from_ring3();
 
 int32_t stallion_interrupt_handler(stallion_interrupt_t *ctx);
 int32_t stallion_handle_general_protection_fault(stallion_interrupt_t *ctx);
+int32_t stallion_handle_syscall(stallion_interrupt_t *ctx, stallion_t *os);
 void stallion_handle_page_fault(stallion_interrupt_t *ctx);
 void *stallion_get_page_fault_pointer();
 void stallion_early_init(stallion_t *os, unsigned long magic, void *addr);

@@ -1,7 +1,6 @@
 #include <stallion.h>
 #include <stallion/stallion.h>
 #include <stallion_i686_elf.h>
-// #include <stallion/stallion_api.h>
 
 #define IRQ_INVALID_TSS 0xa
 #define ISR_GENERAL_PROTECTION_FAULT 0xd
@@ -61,29 +60,7 @@ int32_t stallion_interrupt_handler(stallion_interrupt_t *ctx) {
     if (irq_no >= 8)
       outb(0xa0, 0x20);
   } else if (ctx->number == 128) {
-    stallion_process_t *proc = global_os->scheduler.current_process;
-    if (proc != NULL) {
-      // kputs("GOT A SYSCALL!!!!");
-      if (ctx->eax == STALLION_SYSCALL_EXIT) {
-        // Kill the process.
-        // kwrites("Exiting. Code=");
-        // kputi(ctx->ebx);
-        stallion_kill_current_process(&global_os->scheduler);
-        return -1;
-      } else if (ctx->eax == STALLION_SYSCALL_DECLARE_ATTRIBUTES) {
-        if (proc->is_privileged) {
-          proc->attributes |= ctx->ebx;
-          return STALLION_RESULT_OK;
-        }
-        return STALLION_RESULT_FAIL;
-      } else if (ctx->eax == STALLION_SYSCALL_GET_PID) {
-        return proc->id;
-      } else {
-        kwrites("Unknown syscall code: 0x");
-        kputi_r(ctx->eax, 16);
-        return STALLION_RESULT_FAIL;
-      }
-    }
+    return stallion_handle_syscall(ctx, global_os);
   } else {
     kwrites("Got unsupported interrupt: 0x");
     kputi_r(ctx->number, 16);
