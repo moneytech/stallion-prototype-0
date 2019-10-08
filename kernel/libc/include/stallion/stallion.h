@@ -15,6 +15,9 @@
 #define STALLION_PERMISSION_SERIAL_READ 1
 #define STALLION_PERMISSION_SERIAL_WRITE 2
 
+#define STALLION_RESULT_FAIL 0
+#define STALLION_RESULT_OK 1
+
 #ifdef __ASSEMBLY__
 #else
 #include "../stdint.h"
@@ -30,9 +33,9 @@
 #endif
 
 STALLION_NORETURN void stallion_syscall_exit(uint32_t exit_code);
-STALLION_NORETURN void stallion_syscall_declare_attributes(uint32_t attributes);
-STALLION_NORETURN void stallion_syscall_request_permissions(uint32_t permissions);
-uint32_t stallion_syscall_get_pid();
+int32_t stallion_syscall_declare_attributes(uint32_t attributes);
+int32_t stallion_syscall_request_permissions(uint32_t permissions);
+int32_t stallion_syscall_get_pid();
 
 #endif
 
